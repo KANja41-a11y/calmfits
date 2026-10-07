@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calm Fits</title>
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F7F4F0;
+      --bg-card: #FFFCFA;
+      --text: #3D3A36;
+      --text-soft: #7A756E;
+      --accent: #A8B5A2;
+      --accent-dark: #8A9A84;
+      --rose: #D4B5B0;
+      --pink: #E8C4C0;
+      --border: #E8E2DB;
+      --shadow: 0 4px 20px rgba(61, 58, 54, 0.06);
+      --radius: 16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      cursor: none;
+      position: relative;
+    }
+
+    /* Subtle wallpaper layer */
+    .wallpaper {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.60;
+      transition: opacity 0.6s ease, background-image 0.6s ease;
+      pointer-events: none;
+    }
+
+    .wallpaper::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(247,244,240,0.15) 0%, rgba(247,244,240,0.35) 45%, rgba(247,244,240,0.65) 100%);
+    }
+
+    a, button, input, .cat-btn, .fav-btn, .collection-item, .modal-list button, .outfit-card {
+      cursor: none;
+    }
+
+    /* Custom Bubble Cursor */
+    .cursor-bubble {
+      position: fixed;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(168,181,162,0.55));
+      border: 1.5px solid rgba(168,181,162,0.7);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.15s ease, height 0.15s ease, background 0.2s;
+      box-shadow: 0 0 14px rgba(168,181,162,0.4), inset 0 0 6px rgba(255,255,255,0.65);
+    }
+
+    .cursor-bubble.hover {
+      width: 38px;
+      height: 38px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.98), rgba(212,181,176,0.65));
+      border-color: rgba(212,181,176,0.85);
+      box-shadow: 0 0 18px rgba(212,181,176,0.45), inset 0 0 8px rgba(255,255,255,0.7);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(247, 244, 240, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.75rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--accent-dark); }
+
+    nav {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+
+    nav a {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 400;
+    }
+
+    nav a:hover, nav a.active { color: var(--text); }
+
+    .nav-collections { position: relative; }
+
+    .badge {
+      position: absolute;
+      top: -6px;
+      right: -12px;
+      background: var(--rose);
+      color: white;
+      font-size: 0.65rem;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+    }
+
+    .lang-toggle {
+      display: flex;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      font-size: 0.75rem;
+    }
+
+    .lang-toggle button {
+      border: none;
+      background: transparent;
+      padding: 0.35rem 0.7rem;
+      font-family: inherit;
+      color: var(--text-soft);
+      transition: all 0.2s;
+    }
+
+    .lang-toggle button.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 3.5rem 1.5rem 2.5rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 500;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .hero p {
+      color: var(--text-soft);
+      font-size: 1.05rem;
+      font-weight: 300;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .search-wrap {
+      max-width: 520px;
+      margin: 0 auto 2rem;
+      padding: 0 1.5rem;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 0.7rem 1.25rem;
+      box-shadow: var(--shadow);
+      transition: border-color 0.2s;
+    }
+
+    .search-box:focus-within { border-color: var(--accent); }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 0.95rem;
+      color: var(--text);
+      font-family: inherit;
+    }
+
+    .search-box input::placeholder { color: var(--text-soft); }
+
+    .search-icon {
+      color: var(--text-soft);
+      margin-right: 0.6rem;
+      font-size: 1.1rem;
+    }
+
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.55rem;
+      padding: 0 1.5rem 2.25rem;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .cat-btn {
+      padding: 0.42rem 1rem;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-soft);
+      font-size: 0.82rem;
+      transition: all 0.2s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    .cat-btn:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .cat-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+
+    @media (min-width: 960px) {
+      .main { grid-template-columns: 1fr 310px; }
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.55rem;
+      font-weight: 500;
+      margin-bottom: 1.2rem;
+      color: var(--text);
+    }
+
+    .outfit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .outfit-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: transform 0.25s, box-shadow 0.25s;
+      position: relative;
+    }
+
+    .outfit-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(61, 58, 54, 0.1);
+    }
+
+    .outfit-img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      display: block;
+      background: #EDE8E2;
+    }
+
+    .outfit-info { padding: 0.85rem 1rem 1rem; }
+
+    .outfit-name {
+      font-size: 0.92rem;
+      font-weight: 500;
+      margin-bottom: 0.2rem;
+      color: var(--text);
+    }
+
+    .outfit-cat {
+      font-size: 0.75rem;
+      color: var(--text-soft);
+    }
+
+    .fav-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 252, 250, 0.92);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      color: var(--text-soft);
+    }
+
+    .fav-btn:hover { transform: scale(1.12); }
+    .fav-btn.liked { color: #C47B7B; }
+
+    .collections-panel {
+      background: rgba(255, 252, 250, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.4rem;
+      box-shadow: var(--shadow);
+      height: fit-content;
+      position: sticky;
+      top: 90px;
+      backdrop-filter: blur(8px);
+    }
+
+    .collections-panel h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .collections-panel .sub {
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      margin-bottom: 1rem;
+    }
+
+    .create-collection {
+      display: flex;
+      gap: 0.45rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .create-collection input {
+      flex: 1;
+      padding: 0.55rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.82rem;
+      outline: none;
+      font-family: inherit;
+      background: var(--bg);
+    }
+
+    .create-collection input:focus { border-color: var(--accent); }
+
+    .create-collection button {
+      padding: 0.55rem 0.9rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-family: inherit;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .create-collection button:hover { background: var(--accent-dark); }
+
+    .collection-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .collection-item {
+      padding: 0.7rem 0.9rem;
+      background: var(--bg);
+      border-radius: 14px;
+      border: 1.5px solid transparent;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .collection-item:hover,
+    .collection-item.active {
+      border-color: var(--pink);
+      background: #FBF6F4;
+    }
+
+    .collection-item .name {
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .collection-item .count {
+      font-size: 0.72rem;
+      color: var(--text-soft);
+    }
+
+    .collection-item .left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .collection-item .heart-icon {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .collection-item .delete-col {
+      background: none;
+      border: none;
+      color: var(--text-soft);
+      font-size: 0.8rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+      padding: 2px 5px;
+    }
+
+    .collection-item:hover .delete-col { opacity: 1; }
+
+    .empty-state {
+      text-align: center;
+      padding: 1.6rem 0.8rem;
+      color: var(--text-soft);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .empty-state .emoji {
+      font-size: 1.6rem;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(61, 58, 54, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border-radius: 22px;
+      padding: 1.6rem;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+      transform: translateY(12px);
+      transition: transform 0.25s;
+    }
+
+    .modal-overlay.show .modal { transform: translateY(0); }
+
+    .modal h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .modal-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      max-height: 240px;
+      overflow-y: auto;
+      margin-bottom: 0.9rem;
+    }
+
+    .modal-list button {
+      text-align: left;
+      padding: 0.65rem 0.95rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg);
+      font-family: inherit;
+      font-size: 0.88rem;
+      transition: all 0.2s;
+    }
+
+    .modal-list button:hover {
+      border-color: var(--accent);
+      background: #F0EDE8;
+    }
+
+    .modal-close {
+      width: 100%;
+      padding: 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: transparent;
+      font-family: inherit;
+      color: var(--text-soft);
+      font-size: 0.88rem;
+    }
+
+    .view-header {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .back-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.38rem 0.85rem;
+      font-size: 0.82rem;
+      color: var(--text-soft);
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .music-player {
+      position: fixed;
+      bottom: 22px;
+      left: 22px;
+      z-index: 150;
+      background: rgba(255, 252, 250, 0.95);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 0.55rem 1rem 0.55rem 0.65rem;
+      box-shadow: 0 6px 24px rgba(61,58,54,0.12);
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      max-width: 280px;
+      transition: transform 0.2s;
+      backdrop-filter: blur(8px);
+    }
+
+    .music-player:hover { transform: translateY(-2px); }
+
+    .music-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .music-btn:hover { background: var(--accent-dark); }
+
+    .music-info { overflow: hidden; min-width: 0; }
+
+    .music-title {
+      font-size: 0.82rem;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .music-artist {
+      font-size: 0.7rem;
+      color: var(--text-soft);
+    }
+
+    .music-progress {
+      width: 100%;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+
+    .music-progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.15s linear;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.8rem 1.5rem;
+      color: var(--text-soft);
+      font-size: 0.82rem;
+      border-top: 1px solid var(--border);
+      background: rgba(247,244,240,0.85);
+    }
+
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-soft);
+    }
+
+    @media (max-width: 640px) {
+      nav a:not(.nav-collections) { display: none; }
+      .collections-panel { position: static; }
+      .music-player {
+        bottom: 14px;
+        left: 14px;
+        right: 14px;
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wallpaper" id="wallpaper"></div>
+  <div class="cursor-bubble" id="cursor"></div>
+
+  <header>
+    <div class="header-inner">
+      <a href="#" class="logo" onclick="showAll(); return false;">Calm <span>Fits</span></a>
+      <nav>
+        <a href="#" class="active" id="nav-all" onclick="showAll(); return false;" data-i18n="navAll">All</a>
+        <a href="#" class="nav-collections" id="nav-collections" onclick="showCollectionsPanel(); return false;">
+          <span data-i18n="navCollections">Collections</span>
+          <span class="badge" id="fav-count" style="display:none;">0</span>
+        </a>
+        <div class="lang-toggle">
+          <button id="btn-en" class="active" onclick="setLang('en')">EN</button>
+          <button id="btn-in" onclick="setLang('in')">IN</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1 data-i18n="heroTitle">Find outfits that feel calm</h1>
+    <p data-i18n="heroDesc">Soft collections for days that want to feel a little quieter & prettier.</p>
+  </section>
+
+  <div class="search-wrap">
+    <div class="search-box">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Search outfits you love..." oninput="filterOutfits()" />
+    </div>
+  </div>
+
+  <div class="categories" id="categories"></div>
+
+  <div class="main">
+    <div>
+      <div class="view-header" id="viewHeader" style="display:none;">
+        <button class="back-btn" onclick="showAll()" data-i18n="back">← Back</button>
+        <h2 class="section-title" id="viewTitle" style="margin:0;"></h2>
+      </div>
+      <h2 class="section-title" id="gridTitle" data-i18n="allOutfits">All Outfits</h2>
+      <div class="outfit-grid" id="outfitGrid"></div>
+    </div>
+
+    <aside class="collections-panel" id="collectionsPanel">
+      <h2>♡ <span data-i18n="myCollections">My Collections</span></h2>
+      <p class="sub" data-i18n="collectionsSub">Save your favorites & give them a cute name</p>
+      <div class="create-collection">
+        <input type="text" id="newCollectionName" data-i18n-placeholder="newCollectionPlaceholder" placeholder="New collection name..." />
+        <button onclick="createCollection()" data-i18n="createBtn">Create</button>
+      </div>
+      <div class="collection-list" id="collectionList"></div>
+    </aside>
+  </div>
+
+  <footer>Calm Fits · soft & calm outfits</footer>
+
+  <div class="music-player" id="musicPlayer">
+    <button class="music-btn" id="playBtn" onclick="togglePlay()">▶</button>
+    <div class="music-info">
+      <div class="music-title">Ghost</div>
+      <div class="music-artist">Yel</div>
+      <div class="music-progress"><div class="music-progress-bar" id="progressBar"></div></div>
+    </div>
+    <audio id="audio" src="audio/ghost.mp3" preload="metadata"></audio>
+  </div>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <h3 data-i18n="addToCollection">Add to Collection</h3>
+      <div class="modal-list" id="modalList"></div>
+      <button class="modal-close" onclick="closeModal()" data-i18n="close">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const i18n = {
+      en: {
+        navAll: 'All', navCollections: 'Collections',
+        heroTitle: 'Find outfits that feel calm',
+        heroDesc: 'Soft collections for days that want to feel a little quieter & prettier.',
+        searchPlaceholder: 'Search outfits you love...',
+        allOutfits: 'All Outfits', back: '← Back',
+        myCollections: 'My Collections',
+        collectionsSub: 'Save your favorites & give them a cute name',
+        newCollectionPlaceholder: 'New collection name...',
+        createBtn: 'Create', addToCollection: 'Add to Collection', close: 'Close',
+        emptyCollections: 'No collections yet.<br>Create your first one ☁️',
+        emptyOutfits: 'No outfits here yet ☁️',
+        outfit: 'outfit', outfits: 'outfits',
+        confirmDelete: 'Delete this collection?',
+        makeCollectionFirst: 'Create a collection first on the right ☁️',
+        cat_all: 'All', cat_cute: 'Cute', cat_pretty: 'Pretty', cat_comfy: 'Comfy',
+        cat_softgirly: 'Soft & Girly', cat_simple: 'Simple', cat_cozy: 'Cozy',
+        cat_casual: 'Casual', cat_styling: 'Styling', cat_hijabi: 'Hijabi'
+      },
+      in: {
+        navAll: 'Semua', navCollections: 'Koleksi',
+        heroTitle: 'Temukan outfit yang menenangkan',
+        heroDesc: 'Koleksi lembut untuk hari-hari yang ingin terasa lebih tenang & indah.',
+        searchPlaceholder: 'Cari outfit yang kamu suka...',
+        allOutfits: 'Semua Outfit', back: '← Kembali',
+        myCollections: 'Koleksiku',
+        collectionsSub: 'Simpan favorit & kasih nama yang lucu',
+        newCollectionPlaceholder: 'Nama koleksi baru...',
+        createBtn: 'Buat', addToCollection: 'Tambah ke Koleksi', close: 'Tutup',
+        emptyCollections: 'Belum ada koleksi.<br>Buat yang pertama yuk ☁️',
+        emptyOutfits: 'Belum ada outfit di sini ☁️',
+        outfit: 'outfit', outfits: 'outfit',
+        confirmDelete: 'Hapus koleksi ini?',
+        makeCollectionFirst: 'Buat koleksi dulu di sebelah kanan ya ☁️',
+        cat_all: 'Semua', cat_cute: 'Cute', cat_pretty: 'Pretty', cat_comfy: 'Comfy',
+        cat_softgirly: 'Soft & Girly', cat_simple: 'Simple', cat_cozy: 'Cozy',
+        cat_casual: 'Casual', cat_styling: 'Styling', cat_hijabi: 'Hijabi'
+      }
+    };
+
+    let lang = localStorage.getItem('calmFits_lang') || 'en';
+
+    function t(key) {
+      return (i18n[lang] && i18n[lang][key]) || i18n.en[key] || key;
+    }
+
+    function setLang(l) {
+      lang = l;
+      localStorage.setItem('calmFits_lang', l);
+      document.getElementById('btn-en').classList.toggle('active', l === 'en');
+      document.getElementById('btn-in').classList.toggle('active', l === 'in');
+      applyI18n();
+      renderCategories();
+      renderOutfits();
+      renderCollections();
+    }
+
+    function applyI18n() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        el.innerHTML = t(el.getAttribute('data-i18n'));
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+      });
+      if (currentView === 'all') {
+        const titleEl = document.getElementById('gridTitle');
+        if (currentCategory === 'all') {
+          titleEl.textContent = t('allOutfits');
+        } else {
+          const cat = categories.find(c => c.id === currentCategory);
+          titleEl.textContent = (cat ? t(cat.i18nKey) : '') + ' Outfits';
+        }
+      }
+    }
+
+    const categories = [
+      { id: 'all', emoji: '✦', i18nKey: 'cat_all' },
+      { id: 'cute', emoji: '👗', i18nKey: 'cat_cute' },
+      { id: 'pretty', emoji: '🎀', i18nKey: 'cat_pretty' },
+      { id: 'comfy', emoji: '🧸', i18nKey: 'cat_comfy' },
+      { id: 'soft-girly', emoji: '🩰', i18nKey: 'cat_softgirly' },
+      { id: 'simple', emoji: '🖤', i18nKey: 'cat_simple' },
+      { id: 'cozy', emoji: '☁️', i18nKey: 'cat_cozy' },
+      { id: 'casual', emoji: '🎧', i18nKey: 'cat_casual' },
+      { id: 'styling', emoji: '✦', i18nKey: 'cat_styling' },
+      { id: 'hijabi', emoji: '🧕', i18nKey: 'cat_hijabi' }
+    ];
+
+    // Wallpaper map
+    const wallpapers = {
+      all: 'images/wallpaper-all.jpg',
+      cute: 'images/wallpaper-cute.jpg',
+      pretty: 'images/wallpaper-pretty.jpg',
+      comfy: 'images/garden-cat.jpg',
+      'soft-girly': 'images/rose-mirror.jpg',
+      simple: 'images/swans.jpg',
+      cozy: 'images/fish-bowls.jpg',
+      casual: 'images/flower-bike.jpg',
+      styling: 'images/misty-flowers.jpg',
+      hijabi: 'images/cherry-water.jpg'
+    };
+
+    function updateWallpaper() {
+      const wp = document.getElementById('wallpaper');
+      const src = wallpapers[currentCategory] || wallpapers.all;
+      wp.style.backgroundImage = `url('${src}')`;
+    }
+
+    const outfits = [
+      // CUTE (user photos)
+      { id: 1, name: 'Kawaii', category: 'cute', img: 'images/kawaii.jpg' },
+      { id: 2, name: 'Korean Casual', category: 'cute', img: 'images/korean-casual.jpg' },
+      { id: 3, name: 'Y2K Cute', category: 'cute', img: 'images/y2k-cute.jpg' },
+      { id: 4, name: 'College Girl', category: 'cute', img: 'images/college-girl.jpg' },
+      { id: 5, name: 'Comfy Cute', category: 'cute', img: 'images/comfy-cute.jpg' },
+      { id: 6, name: 'Graphic Tee Outfit', category: 'cute', img: 'images/graphic-tee.jpg' },
+      { id: 7, name: 'Preppy', category: 'cute', img: 'images/preppy.jpg' },
+      { id: 8, name: 'Soft Girl', category: 'cute', img: 'images/soft-girl.jpg' },
+
+      // PRETTY (user photos - new)
+      { id: 25, name: 'Cottagecore', category: 'pretty', img: 'images/cottagecore.jpg' },
+      { id: 26, name: 'Elegant', category: 'pretty', img: 'images/elegant.jpg' },
+      { id: 27, name: 'Fairycore', category: 'pretty', img: 'images/fairycore.jpg' },
+      { id: 28, name: 'Feminine', category: 'pretty', img: 'images/feminine.jpg' },
+      { id: 29, name: 'Balletcore', category: 'pretty', img: 'images/balletcore.jpg' },
+      { id: 30, name: 'Coquette', category: 'pretty', img: 'images/coquette.jpg' },
+      { id: 31, name: 'Princesscore', category: 'pretty', img: 'images/princesscore.jpg' },
+      { id: 32, name: 'Romantic', category: 'pretty', img: 'images/romantic.jpg' },
+
+      // COMFY
+      { id: 40, name: 'T-shirt & Baggy Jeans', category: 'comfy', img: 'images/tshirt-baggy.jpg' },
+      { id: 41, name: 'Oversized Hoodie', category: 'comfy', img: 'images/oversized-hoodie.jpg' },
+      { id: 42, name: 'Jogger Outfit', category: 'comfy', img: 'images/jogger-outfit.jpg' },
+      { id: 43, name: 'Cozy Knitwear', category: 'comfy', img: 'images/cozy-knitwear.jpg' },
+      { id: 44, name: 'Streetwear', category: 'comfy', img: 'images/streetwear.jpg' },
+      { id: 45, name: 'Soft Girl Casual', category: 'comfy', img: 'images/soft-girl-casual.jpg' },
+      { id: 46, name: 'Fluffy Sweater', category: 'comfy', img: 'images/fluffy-sweater.jpg' },
+      { id: 47, name: 'Minimalist Casual', category: 'comfy', img: 'images/minimalist-casual.jpg' },
+
+      // SOFT & GIRLY
+      { id: 50, name: 'Preppy Feminine', category: 'soft-girly', img: 'images/preppy-feminine.jpg' },
+      { id: 51, name: 'Korean Feminine', category: 'soft-girly', img: 'images/korean-feminine.jpg' },
+      { id: 52, name: 'Angelcore', category: 'soft-girly', img: 'images/angelcore.jpg' },
+      { id: 53, name: 'Princesscore', category: 'soft-girly', img: 'images/princesscore-soft.jpg' },
+      { id: 54, name: 'Soft Romantic', category: 'soft-girly', img: 'images/soft-romantic.jpg' },
+      { id: 55, name: 'Vintage Feminine', category: 'soft-girly', img: 'images/vintage-feminine.jpg' },
+      { id: 56, name: 'Girly Casual', category: 'soft-girly', img: 'images/girly-casual.jpg' },
+      { id: 57, name: 'Dollcore', category: 'soft-girly', img: 'images/dollcore.jpg' },
+
+      // HIJABI
+      { id: 23, name: 'Soft Hijab Look', category: 'hijabi', img: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=400&h=550&fit=crop' },
+      { id: 24, name: 'Elegant Hijabi', category: 'hijabi', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=550&fit=crop' }
+    ];
+
+    let currentCategory = 'all';
+    let currentView = 'all';
+    let currentCollectionId = null;
+    let favorites = JSON.parse(localStorage.getItem('calmFits_favorites') || '[]');
+    let collections = JSON.parse(localStorage.getItem('calmFits_collections') || '[]');
+
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    document.addEventListener('mousedown', () => cursor.classList.add('hover'));
+    document.addEventListener('mouseup', () => cursor.classList.remove('hover'));
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.closest('button, a, .cat-btn, .fav-btn, .collection-item, input, .outfit-card')) {
+        cursor.classList.add('hover');
+      }
+    });
+    document.addEventListener('mouseout', (e) => {
+      if (e.target.closest('button, a, .cat-btn, .fav-btn, .collection-item, input, .outfit-card')) {
+        cursor.classList.remove('hover');
+      }
+    });
+
+    // Music
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('playBtn');
+    const progressBar = document.getElementById('progressBar');
+
+    function togglePlay() {
+      if (audio.paused) {
+        audio.play();
+        playBtn.textContent = '❚❚';
+      } else {
+        audio.pause();
+        playBtn.textContent = '▶';
+      }
+    }
+
+    audio.addEventListener('timeupdate', () => {
+      if (audio.duration) {
+        progressBar.style.width = (audio.currentTime / audio.duration * 100) + '%';
+      }
+    });
+    audio.addEventListener('ended', () => {
+      playBtn.textContent = '▶';
+      progressBar.style.width = '0%';
+    });
+
+    function init() {
+      setLang(lang);
+      renderCategories();
+      renderOutfits();
+      renderCollections();
+      updateFavBadge();
+      updateWallpaper();
+    }
+
+    function save() {
+      localStorage.setItem('calmFits_favorites', JSON.stringify(favorites));
+      localStorage.setItem('calmFits_collections', JSON.stringify(collections));
+      updateFavBadge();
+    }
+
+    function updateFavBadge() {
+      const badge = document.getElementById('fav-count');
+      if (favorites.length > 0) {
+        badge.style.display = 'flex';
+        badge.textContent = favorites.length;
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    function renderCategories() {
+      const container = document.getElementById('categories');
+      container.innerHTML = categories.map(cat => `
+        <button class="cat-btn ${currentCategory === cat.id ? 'active' : ''}"
+                onclick="setCategory('${cat.id}')">
+          ${cat.emoji} ${t(cat.i18nKey)}
+        </button>
+      `).join('');
+    }
+
+    function setCategory(id) {
+      currentCategory = id;
+      currentView = 'all';
+      currentCollectionId = null;
+      document.getElementById('viewHeader').style.display = 'none';
+      document.getElementById('gridTitle').style.display = 'block';
+      document.getElementById('gridTitle').textContent =
+        id === 'all' ? t('allOutfits') : t(categories.find(c => c.id === id).i18nKey) + ' Outfits';
+      renderCategories();
+      filterOutfits();
+      updateWallpaper();
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('nav-all').classList.add('active');
+    }
+
+    function getFilteredOutfits() {
+      const search = document.getElementById('searchInput').value.toLowerCase().trim();
+      let list = outfits;
+
+      if (currentView === 'collection' && currentCollectionId) {
+        const col = collections.find(c => c.id === currentCollectionId);
+        if (col) list = outfits.filter(o => col.outfitIds.includes(o.id));
+      } else if (currentCategory !== 'all') {
+        list = list.filter(o => o.category === currentCategory);
+      }
+
+      if (search) {
+        list = list.filter(o =>
+          o.name.toLowerCase().includes(search) ||
+          o.category.toLowerCase().includes(search)
+        );
+      }
+      return list;
+    }
+
+    function renderOutfits() {
+      const grid = document.getElementById('outfitGrid');
+      const list = getFilteredOutfits();
+
+      if (list.length === 0) {
+        grid.innerHTML = `<div class="no-results">${t('emptyOutfits')}</div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map(o => {
+        const isFav = favorites.includes(o.id);
+        const cat = categories.find(c => c.id === o.category);
+        const catLabel = cat ? t(cat.i18nKey) : o.category;
+        return `
+          <div class="outfit-card">
+            <button class="fav-btn ${isFav ? 'liked' : ''}" onclick="toggleFavorite(${o.id}, event)" title="Favorite">
+              ${isFav ? '♥' : '♡'}
+            </button>
+            <img class="outfit-img" src="${o.img}" alt="${o.name}" loading="lazy"
+                 onerror="this.src='https://via.placeholder.com/400x550/EDE8E2/7A756E?text=Calm+Fits'" />
+            <div class="outfit-info">
+              <div class="outfit-name">${o.name}</div>
+              <div class="outfit-cat">${catLabel}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterOutfits() { renderOutfits(); }
+
+    function showAll() {
+      currentView = 'all';
+      currentCollectionId = null;
+      currentCategory = 'all';
+      document.getElementById('viewHeader').style.display = 'none';
+      document.getElementById('gridTitle').style.display = 'block';
+      document.getElementById('gridTitle').textContent = t('allOutfits');
+      document.getElementById('searchInput').value = '';
+      renderCategories();
+      renderOutfits();
+      updateWallpaper();
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('nav-all').classList.add('active');
+    }
+
+    function toggleFavorite(id, e) {
+      e.stopPropagation();
+      const idx = favorites.indexOf(id);
+      if (idx > -1) {
+        favorites.splice(idx, 1);
+        collections.forEach(c => {
+          c.outfitIds = c.outfitIds.filter(oid => oid !== id);
+        });
+      } else {
+        favorites.push(id);
+        openModal(id);
+      }
+      save();
+      renderOutfits();
+      renderCollections();
+    }
+
+    function createCollection() {
+      const input = document.getElementById('newCollectionName');
+      const name = input.value.trim();
+      if (!name) return;
+      const id = 'col_' + Date.now();
+      collections.push({ id, name, outfitIds: [] });
+      input.value = '';
+      save();
+      renderCollections();
+    }
+
+    function renderCollections() {
+      const list = document.getElementById('collectionList');
+      if (collections.length === 0) {
+        list.innerHTML = `<div class="empty-state"><span class="emoji">☁️</span>${t('emptyCollections')}</div>`;
+        return;
+      }
+      list.innerHTML = collections.map(c => {
+        const countLabel = c.outfitIds.length === 1 ? t('outfit') : t('outfits');
+        return `
+          <div class="collection-item ${currentCollectionId === c.id ? 'active' : ''}" onclick="viewCollection('${c.id}')">
+            <div class="left">
+              <span class="heart-icon">♡</span>
+              <div>
+                <div class="name">${c.name}</div>
+                <div class="count">${c.outfitIds.length} ${countLabel}</div>
+              </div>
+            </div>
+            <button class="delete-col" onclick="deleteCollection('${c.id}', event)" title="Delete">✕</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function viewCollection(id) {
+      currentView = 'collection';
+      currentCollectionId = id;
+      const col = collections.find(c => c.id === id);
+      document.getElementById('viewHeader').style.display = 'flex';
+      document.getElementById('viewTitle').textContent = col.name;
+      document.getElementById('gridTitle').style.display = 'none';
+      currentCategory = 'all';
+      renderCategories();
+      renderOutfits();
+      renderCollections();
+      updateWallpaper();
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('nav-collections').classList.add('active');
+    }
+
+    function deleteCollection(id, e) {
+      e.stopPropagation();
+      if (!confirm(t('confirmDelete'))) return;
+      collections = collections.filter(c => c.id !== id);
+      if (currentCollectionId === id) showAll();
+      save();
+      renderCollections();
+    }
+
+    function showCollectionsPanel() {
+      document.getElementById('collectionsPanel').scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('nav-collections').classList.add('active');
+    }
+
+    let pendingOutfitId = null;
+
+    function openModal(outfitId) {
+      pendingOutfitId = outfitId;
+      const modalList = document.getElementById('modalList');
+      if (collections.length === 0) {
+        modalList.innerHTML = `<div class="empty-state" style="padding:1rem;">${t('makeCollectionFirst')}</div>`;
+      } else {
+        modalList.innerHTML = collections.map(c => `
+          <button onclick="addToCollection('${c.id}')">${c.name}</button>
+        `).join('');
+      }
+      document.getElementById('modal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('show');
+      pendingOutfitId = null;
+    }
+
+    function addToCollection(colId) {
+      const col = collections.find(c => c.id === colId);
+      if (col && pendingOutfitId && !col.outfitIds.includes(pendingOutfitId)) {
+        col.outfitIds.push(pendingOutfitId);
+        save();
+        renderCollections();
+      }
+      closeModal();
+    }
+
+    document.getElementById('modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    init();
+  </script>
+</body>
+</html>
