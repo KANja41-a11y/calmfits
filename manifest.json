@@ -1,0 +1,23 @@
+{
+  "name": "Calm Fits",
+  "short_name": "Calm Fits",
+  "description": "Soft & calm outfits",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F7F4F0",
+  "theme_color": "#A8B5A2",
+  "icons": [
+    {
+      "src": "images/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
