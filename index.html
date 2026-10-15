@@ -1376,6 +1376,7 @@
         </a>
         <a href="#" id="nav-shop" onclick="showShop(); return false;" data-i18n="navShop">Shop</a>
         <a href="#" id="nav-tryon" onclick="showTryOn(); return false;" data-i18n="navTryOn">Try-on</a>
+        <a href="#" id="nav-admin" onclick="openAdminLogin(); return false;" style="font-size:0.85rem;opacity:0.75;" title="Admin">⚙ Admin</a>
         <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Theme">☾</button>
         <div class="lang-toggle">
           <button id="btn-en" class="active" onclick="setLang('en')">EN</button>
@@ -1540,7 +1541,200 @@
     </div>
   </div>
 
+  <!-- Admin Login Modal -->
+  <div class="modal-overlay" id="adminLoginModal">
+    <div class="modal">
+      <h3>⚙ Admin Login</h3>
+      <p style="font-size:0.85rem;color:var(--text-soft);margin-bottom:0.8rem;">Masukkan password admin</p>
+      <input type="password" id="adminPassInput" placeholder="Password" style="width:100%;padding:0.65rem 0.9rem;border:1px solid var(--border);border-radius:12px;font-family:inherit;margin-bottom:0.7rem;outline:none;" />
+      <div id="adminLoginErr" style="color:#C47B7B;font-size:0.82rem;margin-bottom:0.5rem;display:none;"></div>
+      <button onclick="doAdminLogin()" style="width:100%;padding:0.7rem;background:var(--accent);color:white;border:none;border-radius:12px;font-family:inherit;margin-bottom:0.5rem;">Login</button>
+      <button class="modal-close" onclick="closeAdminLogin()">Close</button>
+    </div>
+  </div>
+
+  <!-- Checkout Customer Info Modal -->
+  <div class="modal-overlay" id="checkoutModal">
+    <div class="modal" style="max-width:400px;">
+      <h3>Data Pesanan</h3>
+      <p style="font-size:0.85rem;color:var(--text-soft);margin-bottom:0.9rem;">Isi nama & nomor WA untuk tindak lanjut pesanan</p>
+      <label style="font-size:0.8rem;display:block;margin-bottom:0.25rem;">Nama lengkap</label>
+      <input type="text" id="orderName" placeholder="Nama kamu" style="width:100%;padding:0.6rem 0.85rem;border:1px solid var(--border);border-radius:12px;font-family:inherit;margin-bottom:0.7rem;outline:none;" />
+      <label style="font-size:0.8rem;display:block;margin-bottom:0.25rem;">Nomor WhatsApp</label>
+      <input type="tel" id="orderWA" placeholder="08xxxxxxxxxx" style="width:100%;padding:0.6rem 0.85rem;border:1px solid var(--border);border-radius:12px;font-family:inherit;margin-bottom:0.7rem;outline:none;" />
+      <label style="font-size:0.8rem;display:block;margin-bottom:0.25rem;">Catatan (opsional)</label>
+      <input type="text" id="orderNotes" placeholder="Catatan tambahan..." style="width:100%;padding:0.6rem 0.85rem;border:1px solid var(--border);border-radius:12px;font-family:inherit;margin-bottom:0.9rem;outline:none;" />
+      <div id="checkoutErr" style="color:#C47B7B;font-size:0.82rem;margin-bottom:0.5rem;display:none;"></div>
+      <button onclick="submitOrder()" style="width:100%;padding:0.7rem;background:var(--accent);color:white;border:none;border-radius:12px;font-family:inherit;margin-bottom:0.5rem;">Kirim Pesanan</button>
+      <button class="modal-close" onclick="closeCheckoutModal()">Batal</button>
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <div class="modal-overlay" id="adminPanel" style="align-items:flex-start;padding:2rem 1rem;overflow-y:auto;">
+    <div class="modal" style="max-width:920px;width:96%;max-height:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+        <h3 style="margin:0;">⚙ Admin Panel</h3>
+        <button class="modal-close" onclick="closeAdminPanel()" style="width:auto;padding:0.4rem 0.9rem;">✕ Close</button>
+      </div>
+      <div style="display:flex;gap:0.4rem;margin-bottom:1.2rem;flex-wrap:wrap;">
+        <button class="admin-tab active" data-tab="orders" onclick="switchAdminTab('orders')">📦 Orders</button>
+        <button class="admin-tab" data-tab="outfits" onclick="switchAdminTab('outfits')">👗 Outfits</button>
+        <button class="admin-tab" data-tab="shop" onclick="switchAdminTab('shop')">🛒 Shop</button>
+      </div>
+      <div id="adminTabOrders" class="admin-tab-content"></div>
+      <div id="adminTabOutfits" class="admin-tab-content" style="display:none;"></div>
+      <div id="adminTabShop" class="admin-tab-content" style="display:none;"></div>
+    </div>
+  </div>
+
+  <style>
+    .admin-tab {
+      padding: 0.45rem 1rem;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-family: inherit;
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      transition: all 0.2s;
+    }
+    .admin-tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .admin-table th, .admin-table td {
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.6rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    .admin-table th { background: var(--bg); font-weight: 500; }
+    .admin-table select, .admin-table input, .admin-table button {
+      font-family: inherit;
+      font-size: 0.8rem;
+      padding: 0.3rem 0.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .admin-table button { cursor: pointer; background: var(--bg-card); }
+    .status-pending { color: #C47B7B; font-weight: 500; }
+    .status-processed { color: #B89A4B; font-weight: 500; }
+    .status-done { color: #6B9B6E; font-weight: 500; }
+    .admin-form-row {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; align-items: center;
+    }
+    .admin-form-row input, .admin-form-row select {
+      padding: 0.45rem 0.7rem; border: 1px solid var(--border); border-radius: 10px;
+      font-family: inherit; font-size: 0.85rem; background: var(--bg);
+    }
+  </style>
+
   <script>
+    // ============ API CONFIG ============
+    // Ganti dengan Web App URL dari Apps Script setelah deploy
+    const API_URL = 'YOUR_WEB_APP_URL_HERE';
+    let adminToken = localStorage.getItem('calmFits_adminToken') || '';
+    let outfits = [];
+    let shopProducts = [];
+    // Fallback seed (digunakan jika API belum di-set / gagal)
+    const FALLBACK_OUTFITS = [
+      { id: 1, name: 'Kawaii', category: 'cute', img: 'images/kawaii.jpg', color: 'pink' },
+      { id: 2, name: 'Korean Casual', category: 'cute', img: 'images/korean-casual.jpg', color: 'beige' },
+      { id: 3, name: 'Y2K Cute', category: 'cute', img: 'images/y2k-cute.jpg', color: 'pink' },
+      { id: 4, name: 'College Girl', category: 'cute', img: 'images/college-girl.jpg', color: 'beige' },
+      { id: 5, name: 'Comfy Cute', category: 'cute', img: 'images/comfy-cute.jpg', color: 'beige' },
+      { id: 6, name: 'Graphic Tee Outfit', category: 'cute', img: 'images/graphic-tee.jpg', color: 'black' },
+      { id: 7, name: 'Preppy', category: 'cute', img: 'images/preppy.jpg', color: 'beige' },
+      { id: 8, name: 'Soft Girl', category: 'cute', img: 'images/soft-girl.jpg', color: 'pink' },
+      { id: 25, name: 'Cottagecore', category: 'pretty', img: 'images/cottagecore.jpg', color: 'green' },
+      { id: 26, name: 'Elegant', category: 'pretty', img: 'images/elegant.jpg', color: 'beige' },
+      { id: 27, name: 'Fairycore', category: 'pretty', img: 'images/fairycore.jpg', color: 'green' },
+      { id: 28, name: 'Feminine', category: 'pretty', img: 'images/feminine.jpg', color: 'pink' },
+      { id: 29, name: 'Balletcore', category: 'pretty', img: 'images/balletcore.jpg', color: 'pink' },
+      { id: 30, name: 'Coquette', category: 'pretty', img: 'images/coquette.jpg', color: 'pink' },
+      { id: 31, name: 'Princesscore', category: 'pretty', img: 'images/princesscore.jpg', color: 'pink' },
+      { id: 32, name: 'Romantic', category: 'pretty', img: 'images/romantic.jpg', color: 'pink' },
+      { id: 40, name: 'T-shirt & Baggy Jeans', category: 'comfy', img: 'images/tshirt-baggy.jpg', color: 'blue' },
+      { id: 41, name: 'Oversized Hoodie', category: 'comfy', img: 'images/oversized-hoodie.jpg', color: 'beige' },
+      { id: 42, name: 'Jogger Outfit', category: 'comfy', img: 'images/jogger-outfit.jpg', color: 'black' },
+      { id: 43, name: 'Cozy Knitwear', category: 'comfy', img: 'images/cozy-knitwear.jpg', color: 'beige' },
+      { id: 44, name: 'Streetwear', category: 'comfy', img: 'images/streetwear.jpg', color: 'blue' },
+      { id: 45, name: 'Soft Girl Casual', category: 'comfy', img: 'images/soft-girl-casual.jpg', color: 'beige' },
+      { id: 46, name: 'Fluffy Sweater', category: 'comfy', img: 'images/fluffy-sweater.jpg', color: 'green' },
+      { id: 47, name: 'Minimalist Casual', category: 'comfy', img: 'images/minimalist-casual.jpg', color: 'blue' },
+      { id: 50, name: 'Preppy Feminine', category: 'soft-girly', img: 'images/preppy-feminine.jpg', color: 'black' },
+      { id: 51, name: 'Korean Feminine', category: 'soft-girly', img: 'images/korean-feminine.jpg', color: 'blue' },
+      { id: 52, name: 'Angelcore', category: 'soft-girly', img: 'images/angelcore.jpg', color: 'white' },
+      { id: 53, name: 'Princesscore Soft', category: 'soft-girly', img: 'images/princesscore-soft.jpg', color: 'beige' },
+      { id: 54, name: 'Soft Romantic', category: 'soft-girly', img: 'images/soft-romantic.jpg', color: 'pink' },
+      { id: 55, name: 'Vintage Feminine', category: 'soft-girly', img: 'images/vintage-feminine.jpg', color: 'brown' },
+      { id: 56, name: 'Girly Casual', category: 'soft-girly', img: 'images/girly-casual.jpg', color: 'pink' },
+      { id: 57, name: 'Dollcore', category: 'soft-girly', img: 'images/dollcore.jpg', color: 'red' },
+      { id: 23, name: 'Soft Hijab Look', category: 'hijabi', img: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=400&h=550&fit=crop', color: 'beige' },
+      { id: 24, name: 'Elegant Hijabi', category: 'hijabi', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=550&fit=crop', color: 'beige' }
+    ];
+    const FALLBACK_SHOP = [
+      { id: 's1', outfitId: 1, name: 'Kawaii', price: 189000, img: 'images/kawaii.jpg' },
+      { id: 's2', outfitId: 2, name: 'Korean Casual', price: 165000, img: 'images/korean-casual.jpg' },
+      { id: 's3', outfitId: 3, name: 'Y2K Cute', price: 210000, img: 'images/y2k-cute.jpg' },
+      { id: 's4', outfitId: 5, name: 'Comfy Cute', price: 155000, img: 'images/comfy-cute.jpg' },
+      { id: 's5', outfitId: 8, name: 'Soft Girl', price: 175000, img: 'images/soft-girl.jpg' },
+      { id: 's6', outfitId: 25, name: 'Cottagecore', price: 245000, img: 'images/cottagecore.jpg' },
+      { id: 's7', outfitId: 26, name: 'Elegant', price: 289000, img: 'images/elegant.jpg' },
+      { id: 's8', outfitId: 27, name: 'Fairycore', price: 268000, img: 'images/fairycore.jpg' },
+      { id: 's9', outfitId: 29, name: 'Balletcore', price: 198000, img: 'images/balletcore.jpg' },
+      { id: 's10', outfitId: 30, name: 'Coquette', price: 225000, img: 'images/coquette.jpg' },
+      { id: 's11', outfitId: 40, name: 'T-shirt & Baggy Jeans', price: 149000, img: 'images/tshirt-baggy.jpg' },
+      { id: 's12', outfitId: 41, name: 'Oversized Hoodie', price: 179000, img: 'images/oversized-hoodie.jpg' },
+      { id: 's13', outfitId: 42, name: 'Jogger Outfit', price: 199000, img: 'images/jogger-outfit.jpg' },
+      { id: 's14', outfitId: 43, name: 'Cozy Knitwear', price: 215000, img: 'images/cozy-knitwear.jpg' },
+      { id: 's15', outfitId: 50, name: 'Preppy Feminine', price: 259000, img: 'images/preppy-feminine.jpg' },
+      { id: 's16', outfitId: 51, name: 'Korean Feminine', price: 235000, img: 'images/korean-feminine.jpg' },
+      { id: 's17', outfitId: 52, name: 'Angelcore', price: 275000, img: 'images/angelcore.jpg' },
+      { id: 's18', outfitId: 57, name: 'Dollcore', price: 249000, img: 'images/dollcore.jpg' },
+      { id: 's19', outfitId: 46, name: 'Fluffy Sweater', price: 169000, img: 'images/fluffy-sweater.jpg' },
+      { id: 's20', outfitId: 54, name: 'Soft Romantic', price: 229000, img: 'images/soft-romantic.jpg' }
+    ];
+
+    async function apiCall(action, data = {}, method = 'POST') {
+      if (!API_URL || API_URL.includes('YOUR_WEB_APP')) {
+        return { success: false, error: 'API_URL belum di-set' };
+      }
+      try {
+        const payload = { action, ...data };
+        if (adminToken) payload.token = adminToken;
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload),
+          redirect: 'follow'
+        });
+        return await res.json();
+      } catch (err) {
+        console.warn('API error', err);
+        return { success: false, error: err.message };
+      }
+    }
+
+    async function loadRemoteData() {
+      const r = await apiCall('get_all');
+      if (r && r.success && r.outfits && r.outfits.length) {
+        outfits = r.outfits;
+        shopProducts = r.shop || [];
+        return true;
+      }
+      outfits = FALLBACK_OUTFITS.slice();
+      shopProducts = FALLBACK_SHOP.slice();
+      return false;
+    }
+
     const i18n = {
       en: {
         navAll: 'All', navCollections: 'Collections', navShop: 'Shop',
@@ -1678,53 +1872,9 @@
       wp.style.backgroundImage = `url('${src}')`;
     }
 
-    const outfits = [
-      // CUTE (user photos)
-      { id: 1, name: 'Kawaii', category: 'cute', img: 'images/kawaii.jpg', color: 'pink'  },
-      { id: 2, name: 'Korean Casual', category: 'cute', img: 'images/korean-casual.jpg', color: 'beige'  },
-      { id: 3, name: 'Y2K Cute', category: 'cute', img: 'images/y2k-cute.jpg', color: 'pink'  },
-      { id: 4, name: 'College Girl', category: 'cute', img: 'images/college-girl.jpg', color: 'beige'  },
-      { id: 5, name: 'Comfy Cute', category: 'cute', img: 'images/comfy-cute.jpg', color: 'beige'  },
-      { id: 6, name: 'Graphic Tee Outfit', category: 'cute', img: 'images/graphic-tee.jpg', color: 'black'  },
-      { id: 7, name: 'Preppy', category: 'cute', img: 'images/preppy.jpg', color: 'beige'  },
-      { id: 8, name: 'Soft Girl', category: 'cute', img: 'images/soft-girl.jpg', color: 'pink'  },
+    // outfits loaded from API / FALLBACK
 
-      // PRETTY (user photos - new)
-      { id: 25, name: 'Cottagecore', category: 'pretty', img: 'images/cottagecore.jpg', color: 'green'  },
-      { id: 26, name: 'Elegant', category: 'pretty', img: 'images/elegant.jpg', color: 'beige'  },
-      { id: 27, name: 'Fairycore', category: 'pretty', img: 'images/fairycore.jpg', color: 'green'  },
-      { id: 28, name: 'Feminine', category: 'pretty', img: 'images/feminine.jpg', color: 'pink'  },
-      { id: 29, name: 'Balletcore', category: 'pretty', img: 'images/balletcore.jpg', color: 'pink'  },
-      { id: 30, name: 'Coquette', category: 'pretty', img: 'images/coquette.jpg', color: 'pink'  },
-      { id: 31, name: 'Princesscore', category: 'pretty', img: 'images/princesscore.jpg', color: 'pink'  },
-      { id: 32, name: 'Romantic', category: 'pretty', img: 'images/romantic.jpg', color: 'pink'  },
-
-      // COMFY
-      { id: 40, name: 'T-shirt & Baggy Jeans', category: 'comfy', img: 'images/tshirt-baggy.jpg', color: 'blue'  },
-      { id: 41, name: 'Oversized Hoodie', category: 'comfy', img: 'images/oversized-hoodie.jpg', color: 'beige'  },
-      { id: 42, name: 'Jogger Outfit', category: 'comfy', img: 'images/jogger-outfit.jpg', color: 'black'  },
-      { id: 43, name: 'Cozy Knitwear', category: 'comfy', img: 'images/cozy-knitwear.jpg', color: 'beige'  },
-      { id: 44, name: 'Streetwear', category: 'comfy', img: 'images/streetwear.jpg', color: 'blue'  },
-      { id: 45, name: 'Soft Girl Casual', category: 'comfy', img: 'images/soft-girl-casual.jpg', color: 'beige'  },
-      { id: 46, name: 'Fluffy Sweater', category: 'comfy', img: 'images/fluffy-sweater.jpg', color: 'green'  },
-      { id: 47, name: 'Minimalist Casual', category: 'comfy', img: 'images/minimalist-casual.jpg', color: 'blue'  },
-
-      // SOFT & GIRLY
-      { id: 50, name: 'Preppy Feminine', category: 'soft-girly', img: 'images/preppy-feminine.jpg', color: 'black'  },
-      { id: 51, name: 'Korean Feminine', category: 'soft-girly', img: 'images/korean-feminine.jpg', color: 'blue'  },
-      { id: 52, name: 'Angelcore', category: 'soft-girly', img: 'images/angelcore.jpg', color: 'white'  },
-      { id: 53, name: 'Princesscore', category: 'soft-girly', img: 'images/princesscore-soft.jpg', color: 'beige'  },
-      { id: 54, name: 'Soft Romantic', category: 'soft-girly', img: 'images/soft-romantic.jpg', color: 'pink'  },
-      { id: 55, name: 'Vintage Feminine', category: 'soft-girly', img: 'images/vintage-feminine.jpg', color: 'brown'  },
-      { id: 56, name: 'Girly Casual', category: 'soft-girly', img: 'images/girly-casual.jpg', color: 'pink'  },
-      { id: 57, name: 'Dollcore', category: 'soft-girly', img: 'images/dollcore.jpg', color: 'red'  },
-
-      // HIJABI
-      { id: 23, name: 'Soft Hijab Look', category: 'hijabi', img: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=400&h=550&fit=crop', color: 'beige'  },
-      { id: 24, name: 'Elegant Hijabi', category: 'hijabi', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=550&fit=crop', color: 'beige'  }
-    ];
-
-    let currentCategory = 'all';
+        let currentCategory = 'all';
     let currentView = 'all';
     let currentCollectionId = null;
     let favorites = JSON.parse(localStorage.getItem('calmFits_favorites') || '[]');
@@ -1778,30 +1928,8 @@
     });
 
 
-    // ========== SHOP ==========
-    // Different prices per product (IDR)
-    const shopProducts = [
-      { id: 's1', outfitId: 1, name: 'Kawaii', price: 189000, img: 'images/kawaii.jpg' },
-      { id: 's2', outfitId: 2, name: 'Korean Casual', price: 165000, img: 'images/korean-casual.jpg' },
-      { id: 's3', outfitId: 3, name: 'Y2K Cute', price: 210000, img: 'images/y2k-cute.jpg' },
-      { id: 's4', outfitId: 5, name: 'Comfy Cute', price: 155000, img: 'images/comfy-cute.jpg' },
-      { id: 's5', outfitId: 8, name: 'Soft Girl', price: 175000, img: 'images/soft-girl.jpg' },
-      { id: 's6', outfitId: 25, name: 'Cottagecore', price: 245000, img: 'images/cottagecore.jpg' },
-      { id: 's7', outfitId: 26, name: 'Elegant', price: 289000, img: 'images/elegant.jpg' },
-      { id: 's8', outfitId: 27, name: 'Fairycore', price: 268000, img: 'images/fairycore.jpg' },
-      { id: 's9', outfitId: 29, name: 'Balletcore', price: 198000, img: 'images/balletcore.jpg' },
-      { id: 's10', outfitId: 30, name: 'Coquette', price: 225000, img: 'images/coquette.jpg' },
-      { id: 's11', outfitId: 40, name: 'T-shirt & Baggy Jeans', price: 149000, img: 'images/tshirt-baggy.jpg' },
-      { id: 's12', outfitId: 41, name: 'Oversized Hoodie', price: 179000, img: 'images/oversized-hoodie.jpg' },
-      { id: 's13', outfitId: 42, name: 'Jogger Outfit', price: 199000, img: 'images/jogger-outfit.jpg' },
-      { id: 's14', outfitId: 43, name: 'Cozy Knitwear', price: 215000, img: 'images/cozy-knitwear.jpg' },
-      { id: 's15', outfitId: 50, name: 'Preppy Feminine', price: 259000, img: 'images/preppy-feminine.jpg' },
-      { id: 's16', outfitId: 51, name: 'Korean Feminine', price: 235000, img: 'images/korean-feminine.jpg' },
-      { id: 's17', outfitId: 52, name: 'Angelcore', price: 275000, img: 'images/angelcore.jpg' },
-      { id: 's18', outfitId: 57, name: 'Dollcore', price: 249000, img: 'images/dollcore.jpg' },
-      { id: 's19', outfitId: 46, name: 'Fluffy Sweater', price: 169000, img: 'images/fluffy-sweater.jpg' },
-      { id: 's20', outfitId: 54, name: 'Soft Romantic', price: 229000, img: 'images/soft-romantic.jpg' }
-    ];
+        // shopProducts loaded from API / FALLBACK
+
 
     let cart = JSON.parse(localStorage.getItem('calmFits_cart') || '[]');
 
@@ -1973,26 +2101,74 @@
         alert(t('selectPayFirst'));
         return;
       }
+      document.getElementById('orderName').value = '';
+      document.getElementById('orderWA').value = '';
+      document.getElementById('orderNotes').value = '';
+      document.getElementById('checkoutErr').style.display = 'none';
+      document.getElementById('checkoutModal').classList.add('show');
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkoutModal').classList.remove('show');
+    }
+
+    async function submitOrder() {
+      const name = document.getElementById('orderName').value.trim();
+      const wa = document.getElementById('orderWA').value.trim();
+      const notes = document.getElementById('orderNotes').value.trim();
+      const errEl = document.getElementById('checkoutErr');
+      if (!name || !wa) {
+        errEl.textContent = 'Nama dan nomor WA wajib diisi';
+        errEl.style.display = 'block';
+        return;
+      }
       const methodName = selectedPay === 'dana' ? 'Dana' : 'ShopeePay';
       let total = cart.reduce((s, i) => s + i.price * i.qty, 0);
       if (promoActive) total = Math.round(total * 0.9);
-      if (typeof saveOrder === 'function') saveOrder(methodName, total);
-      heartConfetti(window.innerWidth/2, window.innerHeight/2);
-      showToast('Yay! Order placed ✨');
-      alert(t('checkoutMsg').replace('{method}', methodName));
-      cart = [];
-      selectedPay = null;
-      promoActive = false;
-      const pi = document.getElementById('promoInput');
-      if (pi) pi.value = '';
-      const pm = document.getElementById('promoMsg');
-      if (pm) pm.style.display = 'none';
-      document.getElementById('pay-dana').classList.remove('selected');
-      document.getElementById('pay-shopeepay').classList.remove('selected');
-      saveCart();
-      renderCart();
-      if (currentView === 'shop') renderShop();
-      closeCart();
+      const items = cart.map(c => ({ name: c.name, qty: c.qty, price: c.price }));
+
+      const r = await apiCall('create_order', {
+        customerName: name,
+        wa: wa,
+        items: items,
+        total: total,
+        payment: methodName,
+        notes: notes
+      });
+
+      if (r && r.success) {
+        if (typeof saveOrder === 'function') saveOrder(methodName, total);
+        heartConfetti(window.innerWidth/2, window.innerHeight/2);
+        showToast('Pesanan berhasil dikirim ✨');
+        alert('Terima kasih ' + name + '! Pesanan kamu sudah masuk. Kami akan hubungi via WA.');
+        cart = [];
+        selectedPay = null;
+        promoActive = false;
+        const pi = document.getElementById('promoInput');
+        if (pi) pi.value = '';
+        const pm = document.getElementById('promoMsg');
+        if (pm) pm.style.display = 'none';
+        document.getElementById('pay-dana').classList.remove('selected');
+        document.getElementById('pay-shopeepay').classList.remove('selected');
+        saveCart();
+        renderCart();
+        if (currentView === 'shop') renderShop();
+        closeCheckoutModal();
+        closeCart();
+      } else {
+        // fallback lokal jika API belum siap
+        if (typeof saveOrder === 'function') saveOrder(methodName, total);
+        heartConfetti(window.innerWidth/2, window.innerHeight/2);
+        showToast('Pesanan tersimpan (lokal) ✨');
+        alert('Pesanan dicatat. (Backend belum terhubung — set API_URL dulu)');
+        cart = [];
+        selectedPay = null;
+        promoActive = false;
+        saveCart();
+        renderCart();
+        closeCheckoutModal();
+        closeCart();
+      }
     }
 
 
@@ -2340,18 +2516,225 @@
       card.style.setProperty('--sy', ((e.clientY - r.top) / r.height * 100) + '%');
     });
 
-    function init() {
+    // ========== ADMIN PANEL ==========
+    function openAdminLogin() {
+      document.getElementById('adminPassInput').value = '';
+      document.getElementById('adminLoginErr').style.display = 'none';
+      document.getElementById('adminLoginModal').classList.add('show');
+      setTimeout(() => document.getElementById('adminPassInput').focus(), 100);
+    }
+    function closeAdminLogin() {
+      document.getElementById('adminLoginModal').classList.remove('show');
+    }
+    async function doAdminLogin() {
+      const pass = document.getElementById('adminPassInput').value;
+      const err = document.getElementById('adminLoginErr');
+      if (!pass) { err.textContent = 'Isi password'; err.style.display = 'block'; return; }
+      const r = await apiCall('login', { password: pass });
+      if (r && r.success && r.token) {
+        adminToken = r.token;
+        localStorage.setItem('calmFits_adminToken', adminToken);
+        closeAdminLogin();
+        openAdminPanel();
+      } else {
+        err.textContent = (r && r.error) || 'Password salah / API belum siap';
+        err.style.display = 'block';
+      }
+    }
+    function openAdminPanel() {
+      document.getElementById('adminPanel').classList.add('show');
+      switchAdminTab('orders');
+    }
+    function closeAdminPanel() {
+      document.getElementById('adminPanel').classList.remove('show');
+    }
+    function switchAdminTab(tab) {
+      document.querySelectorAll('.admin-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+      document.getElementById('adminTabOrders').style.display = tab === 'orders' ? 'block' : 'none';
+      document.getElementById('adminTabOutfits').style.display = tab === 'outfits' ? 'block' : 'none';
+      document.getElementById('adminTabShop').style.display = tab === 'shop' ? 'block' : 'none';
+      if (tab === 'orders') renderAdminOrders();
+      if (tab === 'outfits') renderAdminOutfits();
+      if (tab === 'shop') renderAdminShop();
+    }
+
+    async function renderAdminOrders() {
+      const el = document.getElementById('adminTabOrders');
+      el.innerHTML = '<p style="color:var(--text-soft)">Loading…</p>';
+      const r = await apiCall('get_orders');
+      if (!r || !r.success) {
+        el.innerHTML = '<p style="color:#C47B7B">' + ((r && r.error) || 'Gagal load orders. Login ulang?') + '</p>';
+        return;
+      }
+      const list = r.data || [];
+      if (!list.length) {
+        el.innerHTML = '<p style="color:var(--text-soft)">Belum ada pesanan ☁️</p>';
+        return;
+      }
+      el.innerHTML = `<table class="admin-table"><thead><tr>
+        <th>ID</th><th>Tanggal</th><th>Nama</th><th>WA</th><th>Items</th><th>Total</th><th>Bayar</th><th>Status</th><th>Aksi</th>
+      </tr></thead><tbody>` + list.map(o => {
+        let itemsStr = o.items;
+        try { const arr = JSON.parse(o.items); itemsStr = arr.map(i => i.name + ' ×' + i.qty).join(', '); } catch(_){}
+        return `<tr>
+          <td>${o.id}</td>
+          <td>${o.date}</td>
+          <td>${o.customerName}</td>
+          <td><a href="https://wa.me/${String(o.wa).replace(/[^0-9]/g,'')}" target="_blank">${o.wa}</a></td>
+          <td style="max-width:180px;font-size:0.75rem;">${itemsStr}</td>
+          <td>${formatPrice(o.total)}</td>
+          <td>${o.payment}</td>
+          <td class="status-${o.status}">${o.status}</td>
+          <td>
+            <select onchange="adminUpdateOrderStatus(${o.id}, this.value)">
+              <option value="pending" ${o.status==='pending'?'selected':''}>pending</option>
+              <option value="processed" ${o.status==='processed'?'selected':''}>processed</option>
+              <option value="done" ${o.status==='done'?'selected':''}>done</option>
+            </select>
+            <button onclick="adminDeleteOrder(${o.id})" title="Hapus">🗑</button>
+          </td>
+        </tr>`;
+      }).join('') + '</tbody></table>';
+    }
+
+    async function adminUpdateOrderStatus(id, status) {
+      const r = await apiCall('update_order', { id, status });
+      if (r && r.success) showToast('Status diupdate');
+      else alert((r && r.error) || 'Gagal');
+      renderAdminOrders();
+    }
+    async function adminDeleteOrder(id) {
+      if (!confirm('Hapus order #' + id + '?')) return;
+      await apiCall('delete_order', { id });
+      renderAdminOrders();
+    }
+
+    function renderAdminOutfits() {
+      const el = document.getElementById('adminTabOutfits');
+      el.innerHTML = `
+        <div class="admin-form-row">
+          <input id="ao-name" placeholder="Nama outfit" />
+          <select id="ao-cat">${categories.filter(c=>c.id!=='all').map(c=>`<option value="${c.id}">${c.id}</option>`).join('')}</select>
+          <input id="ao-img" placeholder="images/xxx.jpg atau URL" style="min-width:180px;" />
+          <input id="ao-color" placeholder="color" style="width:80px;" />
+          <button onclick="adminCreateOutfit()">+ Tambah</button>
+        </div>
+        <table class="admin-table"><thead><tr><th>ID</th><th>Nama</th><th>Kategori</th><th>Img</th><th>Color</th><th>Aksi</th></tr></thead>
+        <tbody>${outfits.map(o => `<tr>
+          <td>${o.id}</td>
+          <td><input value="${o.name.replace(/"/g,'&quot;')}" id="on-${o.id}" style="width:120px;" /></td>
+          <td><input value="${o.category}" id="oc-${o.id}" style="width:90px;" /></td>
+          <td><input value="${o.img}" id="oi-${o.id}" style="width:160px;" /></td>
+          <td><input value="${o.color||''}" id="ocol-${o.id}" style="width:60px;" /></td>
+          <td>
+            <button onclick="adminUpdateOutfit(${o.id})">Save</button>
+            <button onclick="adminDeleteOutfit(${o.id})">🗑</button>
+          </td>
+        </tr>`).join('')}</tbody></table>`;
+    }
+    async function adminCreateOutfit() {
+      const body = {
+        name: document.getElementById('ao-name').value,
+        category: document.getElementById('ao-cat').value,
+        img: document.getElementById('ao-img').value,
+        color: document.getElementById('ao-color').value
+      };
+      const r = await apiCall('create_outfit', body);
+      if (r && r.success) { showToast('Outfit ditambah'); await loadRemoteData(); renderAdminOutfits(); renderOutfits(); }
+      else alert((r && r.error) || 'Gagal');
+    }
+    async function adminUpdateOutfit(id) {
+      const body = {
+        id,
+        name: document.getElementById('on-'+id).value,
+        category: document.getElementById('oc-'+id).value,
+        img: document.getElementById('oi-'+id).value,
+        color: document.getElementById('ocol-'+id).value
+      };
+      const r = await apiCall('update_outfit', body);
+      if (r && r.success) { showToast('Saved'); await loadRemoteData(); renderOutfits(); }
+      else alert((r && r.error) || 'Gagal');
+    }
+    async function adminDeleteOutfit(id) {
+      if (!confirm('Hapus outfit #' + id + '?')) return;
+      await apiCall('delete_outfit', { id });
+      await loadRemoteData();
+      renderAdminOutfits();
+      renderOutfits();
+    }
+
+    function renderAdminShop() {
+      const el = document.getElementById('adminTabShop');
+      el.innerHTML = `
+        <div class="admin-form-row">
+          <input id="as-name" placeholder="Nama produk" />
+          <input id="as-outfitId" placeholder="outfitId" style="width:70px;" type="number" />
+          <input id="as-price" placeholder="Harga" type="number" style="width:100px;" />
+          <input id="as-img" placeholder="img path/URL" style="min-width:160px;" />
+          <button onclick="adminCreateShop()">+ Tambah</button>
+        </div>
+        <table class="admin-table"><thead><tr><th>ID</th><th>Nama</th><th>OutfitId</th><th>Harga</th><th>Img</th><th>Aksi</th></tr></thead>
+        <tbody>${shopProducts.map(s => `<tr>
+          <td>${s.id}</td>
+          <td><input value="${s.name.replace(/"/g,'&quot;')}" id="sn-${s.id}" style="width:120px;" /></td>
+          <td><input value="${s.outfitId}" id="so-${s.id}" style="width:60px;" type="number" /></td>
+          <td><input value="${s.price}" id="sp-${s.id}" style="width:90px;" type="number" /></td>
+          <td><input value="${s.img}" id="si-${s.id}" style="width:140px;" /></td>
+          <td>
+            <button onclick="adminUpdateShop('${s.id}')">Save</button>
+            <button onclick="adminDeleteShop('${s.id}')">🗑</button>
+          </td>
+        </tr>`).join('')}</tbody></table>`;
+    }
+    async function adminCreateShop() {
+      const body = {
+        name: document.getElementById('as-name').value,
+        outfitId: Number(document.getElementById('as-outfitId').value) || 0,
+        price: Number(document.getElementById('as-price').value) || 0,
+        img: document.getElementById('as-img').value
+      };
+      const r = await apiCall('create_shop', body);
+      if (r && r.success) { showToast('Produk ditambah'); await loadRemoteData(); renderAdminShop(); if (typeof renderShop==='function') renderShop(); }
+      else alert((r && r.error) || 'Gagal');
+    }
+    async function adminUpdateShop(id) {
+      const body = {
+        id,
+        name: document.getElementById('sn-'+id).value,
+        outfitId: Number(document.getElementById('so-'+id).value),
+        price: Number(document.getElementById('sp-'+id).value),
+        img: document.getElementById('si-'+id).value
+      };
+      const r = await apiCall('update_shop', body);
+      if (r && r.success) { showToast('Saved'); await loadRemoteData(); if (typeof renderShop==='function') renderShop(); }
+      else alert((r && r.error) || 'Gagal');
+    }
+    async function adminDeleteShop(id) {
+      if (!confirm('Hapus produk ' + id + '?')) return;
+      await apiCall('delete_shop', { id });
+      await loadRemoteData();
+      renderAdminShop();
+      if (typeof renderShop === 'function') renderShop();
+    }
+
+    // Enter key on admin password
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && document.getElementById('adminLoginModal').classList.contains('show')) {
+        doAdminLogin();
+      }
+    });
+
+    async function init() {
       setLang(lang);
       loadTheme();
+      await loadRemoteData();
       renderCategories();
-      /* color palette removed */
       renderOutfits();
       renderCollections();
       updateFavBadge();
       updateCartBadge();
       updateWallpaper();
       renderOrderHistory();
-      // shop category filter options
       const scf = document.getElementById('shopCatFilter');
       if (scf && scf.options.length <= 1) {
         categories.filter(c => c.id !== 'all').forEach(c => {
