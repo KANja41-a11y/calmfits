@@ -1,0 +1,2732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calm Fits</title>
+  <meta name="theme-color" content="#A8B5A2" />
+  <meta name="description" content="Calm Fits — soft & calm outfits" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/favicon.png" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F7F4F0;
+      --bg-card: #FFFCFA;
+      --text: #3D3A36;
+      --text-soft: #7A756E;
+      --accent: #A8B5A2;
+      --accent-dark: #8A9A84;
+      --rose: #D4B5B0;
+      --pink: #E8C4C0;
+      --border: #E8E2DB;
+      --shadow: 0 4px 20px rgba(61, 58, 54, 0.06);
+      --radius: 16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      cursor: none;
+      position: relative;
+    }
+
+    /* Subtle wallpaper layer */
+    .wallpaper {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.60;
+      transition: opacity 0.6s ease, background-image 0.6s ease;
+      pointer-events: none;
+    }
+
+    .wallpaper::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(247,244,240,0.15) 0%, rgba(247,244,240,0.35) 45%, rgba(247,244,240,0.65) 100%);
+    }
+
+    a, button, input, select, textarea, .cat-btn, .fav-btn, .collection-item,
+    .modal-list button, .outfit-card, .shop-card, .color-chip, .tryon-pick,
+    .pay-option, .theme-toggle, label {
+      cursor: none !important;
+    }
+
+    /* Custom Bubble Cursor */
+    .cursor-bubble {
+      position: fixed;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.98), rgba(168,181,162,0.65));
+      border: 2px solid rgba(168,181,162,0.85);
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: width 0.15s ease, height 0.15s ease, background 0.2s, opacity 0.2s;
+      box-shadow: 0 0 16px rgba(168,181,162,0.55), inset 0 0 8px rgba(255,255,255,0.7);
+      opacity: 1;
+      left: -100px;
+      top: -100px;
+    }
+
+    .cursor-bubble.hover {
+      width: 42px;
+      height: 42px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,1), rgba(212,181,176,0.75));
+      border-color: rgba(212,181,176,0.95);
+      box-shadow: 0 0 22px rgba(212,181,176,0.55), inset 0 0 10px rgba(255,255,255,0.8);
+    }
+
+    body.dark .cursor-bubble {
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(168,181,162,0.5));
+      border-color: rgba(200, 210, 195, 0.8);
+      box-shadow: 0 0 18px rgba(168,181,162,0.5), inset 0 0 8px rgba(255,255,255,0.5);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(247, 244, 240, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.75rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--accent-dark); }
+
+    nav {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+
+    nav a {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 400;
+    }
+
+    nav a:hover, nav a.active { color: var(--text); }
+
+    .nav-collections { position: relative; }
+
+    .badge {
+      position: absolute;
+      top: -6px;
+      right: -12px;
+      background: var(--rose);
+      color: white;
+      font-size: 0.65rem;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+    }
+
+    .lang-toggle {
+      display: flex;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      font-size: 0.75rem;
+    }
+
+    .lang-toggle button {
+      border: none;
+      background: transparent;
+      padding: 0.35rem 0.7rem;
+      font-family: inherit;
+      color: var(--text-soft);
+      transition: all 0.2s;
+    }
+
+    .lang-toggle button.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 3.5rem 1.5rem 2.5rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 500;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .hero p {
+      color: var(--text-soft);
+      font-size: 1.05rem;
+      font-weight: 300;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .search-wrap {
+      max-width: 520px;
+      margin: 0 auto 2rem;
+      padding: 0 1.5rem;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 0.7rem 1.25rem;
+      box-shadow: var(--shadow);
+      transition: border-color 0.2s;
+    }
+
+    .search-box:focus-within { border-color: var(--accent); }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 0.95rem;
+      color: var(--text);
+      font-family: inherit;
+    }
+
+    .search-box input::placeholder { color: var(--text-soft); }
+
+    .search-icon {
+      color: var(--text-soft);
+      margin-right: 0.6rem;
+      font-size: 1.1rem;
+    }
+
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.55rem;
+      padding: 0 1.5rem 2.25rem;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .cat-btn {
+      padding: 0.42rem 1rem;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-soft);
+      font-size: 0.82rem;
+      transition: all 0.2s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    .cat-btn:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .cat-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .main {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 1.25rem 5rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+
+    @media (min-width: 820px) {
+      .main {
+        grid-template-columns: 1fr 280px;
+        align-items: start;
+      }
+    }
+    @media (min-width: 1100px) {
+      .main { grid-template-columns: 1fr 300px; }
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.55rem;
+      font-weight: 500;
+      margin-bottom: 1.2rem;
+      color: var(--text);
+    }
+
+    .outfit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.15rem;
+    }
+
+    .outfit-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: transform 0.25s, box-shadow 0.25s;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .outfit-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(61, 58, 54, 0.1);
+    }
+
+    .outfit-card img,
+    .outfit-img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      background: #EDE8E2;
+    }
+
+    @media (min-width: 600px) {
+      .outfit-card img, .outfit-img { height: 280px; }
+      .outfit-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    }
+    @media (min-width: 900px) {
+      .outfit-card img, .outfit-img { height: 320px; }
+      .outfit-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    }
+
+    .outfit-info { padding: 0.85rem 1rem 1rem; }
+
+    .outfit-name {
+      font-size: 0.92rem;
+      font-weight: 500;
+      margin-bottom: 0.2rem;
+      color: var(--text);
+    }
+
+    .outfit-cat {
+      font-size: 0.75rem;
+      color: var(--text-soft);
+    }
+
+    .fav-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 252, 250, 0.92);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      color: var(--text-soft);
+    }
+
+    .fav-btn:hover { transform: scale(1.12); }
+    .fav-btn.liked { color: #C47B7B; }
+
+    .card-cart-btn {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.45rem 0.5rem;
+      border: none;
+      border-radius: 10px;
+      background: var(--accent);
+      color: white;
+      font-family: inherit;
+      font-size: 0.75rem;
+      transition: background 0.2s;
+    }
+    .card-cart-btn:hover { background: var(--accent-dark); }
+    .card-cart-btn.added { background: var(--rose); }
+
+
+    .collections-panel {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 1.2rem 1.15rem;
+      box-shadow: var(--shadow);
+      height: fit-content;
+      position: sticky;
+      top: 72px;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+
+    .collections-panel h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .collections-panel .sub {
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      margin-bottom: 1rem;
+    }
+
+    .create-collection {
+      display: flex;
+      gap: 0.45rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .create-collection input {
+      flex: 1;
+      padding: 0.55rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.82rem;
+      outline: none;
+      font-family: inherit;
+      background: var(--bg);
+    }
+
+    .create-collection input:focus { border-color: var(--accent); }
+
+    .create-collection button {
+      padding: 0.55rem 0.9rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-family: inherit;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .create-collection button:hover { background: var(--accent-dark); }
+
+    .collection-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .collection-item {
+      padding: 0.7rem 0.9rem;
+      background: var(--bg);
+      border-radius: 14px;
+      border: 1.5px solid transparent;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .collection-item:hover,
+    .collection-item.active {
+      border-color: var(--pink);
+      background: #FBF6F4;
+    }
+
+    .collection-item .name {
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .collection-item .count {
+      font-size: 0.72rem;
+      color: var(--text-soft);
+    }
+
+    .collection-item .left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .collection-item .heart-icon {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .collection-item .delete-col {
+      background: none;
+      border: none;
+      color: var(--text-soft);
+      font-size: 0.8rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+      padding: 2px 5px;
+    }
+
+    .collection-item:hover .delete-col { opacity: 1; }
+
+    .empty-state {
+      text-align: center;
+      padding: 1.6rem 0.8rem;
+      color: var(--text-soft);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .empty-state .emoji {
+      font-size: 1.6rem;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(61, 58, 54, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border-radius: 22px;
+      padding: 1.6rem;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+      transform: translateY(12px);
+      transition: transform 0.25s;
+    }
+
+    .modal-overlay.show .modal { transform: translateY(0); }
+
+    .modal h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .modal-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      max-height: 240px;
+      overflow-y: auto;
+      margin-bottom: 0.9rem;
+    }
+
+    .modal-list button {
+      text-align: left;
+      padding: 0.65rem 0.95rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg);
+      font-family: inherit;
+      font-size: 0.88rem;
+      transition: all 0.2s;
+    }
+
+    .modal-list button:hover {
+      border-color: var(--accent);
+      background: #F0EDE8;
+    }
+
+    .modal-close {
+      width: 100%;
+      padding: 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: transparent;
+      font-family: inherit;
+      color: var(--text-soft);
+      font-size: 0.88rem;
+    }
+
+    .view-header {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .back-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.38rem 0.85rem;
+      font-size: 0.82rem;
+      color: var(--text-soft);
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .music-player {
+      position: fixed;
+      bottom: 22px;
+      left: 22px;
+      z-index: 150;
+      background: rgba(255, 252, 250, 0.95);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 0.55rem 1rem 0.55rem 0.65rem;
+      box-shadow: 0 6px 24px rgba(61,58,54,0.12);
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      max-width: 280px;
+      transition: transform 0.2s;
+      backdrop-filter: blur(8px);
+    }
+
+    .music-player:hover { transform: translateY(-2px); }
+
+    .music-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .music-btn:hover { background: var(--accent-dark); }
+
+    .music-info { overflow: hidden; min-width: 0; }
+
+    .music-title {
+      font-size: 0.82rem;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .music-artist {
+      font-size: 0.7rem;
+      color: var(--text-soft);
+    }
+
+    .music-progress {
+      width: 100%;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+
+    .music-progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.15s linear;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.8rem 1.5rem;
+      color: var(--text-soft);
+      font-size: 0.82rem;
+      border-top: 1px solid var(--border);
+      background: rgba(247,244,240,0.85);
+    }
+
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-soft);
+    }
+
+    @media (max-width: 640px) {
+      nav a:not(.nav-collections) { display: none; }
+      /* collections stay sticky */
+      .music-player {
+        bottom: 14px;
+        left: 14px;
+        right: 14px;
+        max-width: none;
+      }
+    }
+
+    /* Calm Shop */
+    .shop-section {
+      display: none;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+    .shop-section.show { display: block; }
+    .shop-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .shop-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      font-weight: 500;
+    }
+
+    .nav-cart-btn {
+      padding: 0.4rem 0.85rem;
+      font-size: 0.8rem;
+      gap: 0.35rem;
+    }
+    @media (max-width: 700px) {
+      .nav-cart-btn span[data-i18n="cart"] { display: none; }
+      .nav-cart-btn { padding: 0.4rem 0.55rem; }
+    }
+
+    .cart-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      font-family: inherit;
+      font-size: 0.85rem;
+      color: var(--text);
+      position: relative;
+    }
+    .cart-btn .cart-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: var(--rose);
+      color: white;
+      font-size: 0.65rem;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      padding: 0 4px;
+    }
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.15rem;
+    }
+    .shop-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: transform 0.25s, box-shadow 0.25s;
+      display: flex;
+      flex-direction: column;
+    }
+    .shop-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(61, 58, 54, 0.1);
+    }
+    .shop-card img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      background: #EDE8E2;
+    }
+    @media (min-width: 600px) {
+      .shop-card img { height: 280px; }
+      .shop-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    }
+    @media (min-width: 900px) {
+      .shop-card img { height: 320px; }
+      .shop-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    }
+    .shop-card-body {
+      padding: 0.9rem 1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      flex: 1;
+    }
+    .shop-card-name {
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+    .shop-card-price {
+      font-size: 0.95rem;
+      color: var(--accent-dark);
+      font-weight: 500;
+    }
+    .shop-add-btn {
+      margin-top: auto;
+      width: 100%;
+      padding: 0.55rem;
+      border: none;
+      border-radius: 12px;
+      background: var(--accent);
+      color: white;
+      font-family: inherit;
+      font-size: 0.82rem;
+      transition: background 0.2s;
+    }
+    .shop-add-btn:hover { background: var(--accent-dark); }
+    .shop-add-btn.added {
+      background: var(--rose);
+    }
+
+    /* Cart drawer */
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(61, 58, 54, 0.35);
+      z-index: 250;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s;
+    }
+    .cart-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(380px, 92vw);
+      height: 100%;
+      background: var(--bg-card);
+      z-index: 260;
+      box-shadow: -8px 0 30px rgba(0,0,0,0.1);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      padding: 1.4rem;
+    }
+    .cart-overlay.show .cart-drawer {
+      transform: translateX(0);
+    }
+    .cart-drawer h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cart-close {
+      border: none;
+      background: none;
+      font-size: 1.2rem;
+      color: var(--text-soft);
+      font-family: inherit;
+    }
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .cart-item {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.6rem;
+      background: var(--bg);
+      border-radius: 12px;
+    }
+    .cart-item img {
+      width: 56px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .cart-item-info { flex: 1; min-width: 0; }
+    .cart-item-name {
+      font-size: 0.85rem;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .cart-item-price {
+      font-size: 0.8rem;
+      color: var(--accent-dark);
+    }
+    .cart-item-qty {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.25rem;
+    }
+    .cart-item-qty button {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      font-size: 0.85rem;
+      font-family: inherit;
+      color: var(--text);
+    }
+    .cart-remove {
+      border: none;
+      background: none;
+      color: var(--text-soft);
+      font-size: 0.85rem;
+      padding: 4px;
+    }
+    .cart-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+      margin-top: 0.5rem;
+    }
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 500;
+      margin-bottom: 0.9rem;
+      font-size: 1rem;
+    }
+    .cart-checkout {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 14px;
+      background: var(--accent);
+      color: white;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .cart-checkout:hover { background: var(--accent-dark); }
+
+
+    .checkout-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      margin-bottom: 0.75rem;
+    }
+    .checkout-fields label {
+      font-size: 0.78rem;
+      color: var(--text-soft);
+    }
+    .checkout-fields input {
+      width: 100%;
+      padding: 0.55rem 0.7rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-family: inherit;
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+    .checkout-fields input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .pay-methods {
+      margin-bottom: 0.9rem;
+    }
+    .pay-methods-label {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      margin-bottom: 0.45rem;
+    }
+    .pay-options {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .pay-option {
+      flex: 1;
+      padding: 0.65rem 0.5rem;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg);
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .pay-option:hover {
+      border-color: var(--accent);
+    }
+    .pay-option.selected {
+      border-color: var(--accent);
+      background: #F0F4EF;
+      box-shadow: 0 0 0 2px rgba(168,181,162,0.25);
+    }
+    .pay-option .pay-logo {
+      display: block;
+      font-size: 0.95rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .cart-empty {
+      text-align: center;
+      color: var(--text-soft);
+      padding: 2rem 1rem;
+      font-size: 0.9rem;
+    }
+    .browse-main { display: block; }
+    .browse-main.hide { display: none; }
+    .hero.hide, .search-wrap.hide, .categories.hide { display: none; }
+
+
+    body.dark {
+      --bg: #1E1C1A;
+      --bg-card: #2A2725;
+      --text: #F0EBE6;
+      --text-soft: #A89F96;
+      --accent: #8A9A84;
+      --accent-dark: #A8B5A2;
+      --rose: #C4A09A;
+      --pink: #B8908C;
+      --border: #3D3835;
+      --shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+    body.dark .wallpaper::after {
+      background: linear-gradient(180deg, rgba(30,28,26,0.35) 0%, rgba(30,28,26,0.55) 45%, rgba(30,28,26,0.8) 100%);
+    }
+    body.dark .shop-add-btn.added { background: var(--rose); }
+
+
+    /* Color filter */
+    .color-filters { display: none !important; /* removed */
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      justify-content: center;
+      margin: 0.5rem auto 1.2rem;
+      max-width: 700px;
+      padding: 0 1rem;
+    }
+    .color-chip {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .color-chip:hover { transform: scale(1.12); }
+    .color-chip.active { border-color: var(--text); transform: scale(1.15); }
+    .color-chip.all-chip {
+      width: auto; padding: 0 10px; border-radius: 20px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      font-size: 0.72rem; color: var(--text-soft);
+      display: flex; align-items: center;
+    }
+
+    /* Detail modal */
+    .detail-overlay {
+      position: fixed; inset: 0;
+      background: rgba(61,58,54,0.45);
+      z-index: 300;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden;
+      transition: all 0.25s;
+      padding: 1rem;
+    }
+    .detail-overlay.show { opacity: 1; visibility: visible; }
+    .detail-modal {
+      background: var(--bg-card);
+      border-radius: 20px;
+      max-width: 420px; width: 100%;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      max-height: 90vh;
+      display: flex; flex-direction: column;
+    }
+    .detail-modal img {
+      width: 100%;
+      height: auto;
+      max-height: 38vh;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .detail-modal {
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+    .detail-body {
+      padding: 1rem 1.2rem 1.3rem;
+    }
+    .detail-body { padding: 1.2rem 1.3rem 1.4rem; }
+    .detail-body h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.45rem; font-weight: 500; margin-bottom: 0.3rem;
+    }
+    .detail-cat {
+      font-size: 0.8rem; color: var(--text-soft); margin-bottom: 0.6rem;
+    }
+    .detail-desc {
+      font-size: 0.88rem; color: var(--text-soft); line-height: 1.5; margin-bottom: 1rem;
+    }
+    .detail-actions {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .detail-actions button {
+      flex: 1; min-width: 120px;
+      padding: 0.6rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-family: inherit; font-size: 0.82rem;
+      color: var(--text);
+    }
+    .detail-actions .primary {
+      background: var(--accent); color: white; border-color: var(--accent);
+    }
+    .detail-close {
+      position: absolute; top: 12px; right: 12px;
+      width: 32px; height: 32px; border-radius: 50%;
+      border: none; background: rgba(255,255,255,0.85);
+      font-size: 1rem; cursor: pointer;
+    }
+    .detail-modal { position: relative; overflow-y: auto; }
+
+    /* Try-on board */
+    .tryon-section {
+      display: none;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+    .tryon-section.show { display: block; }
+    .tryon-board {
+      min-height: 280px;
+      background: var(--bg-card);
+      border: 2px dashed var(--border);
+      border-radius: 20px;
+      padding: 1.2rem;
+      display: flex; flex-wrap: wrap; gap: 0.8rem;
+      align-content: flex-start;
+      margin-bottom: 1rem;
+    }
+    .tryon-board.empty-msg {
+      align-items: center; justify-content: center;
+      color: var(--text-soft); font-size: 0.9rem;
+    }
+    .tryon-item {
+      width: 100px;
+      position: relative;
+    }
+    .tryon-item img {
+      width: 100%; aspect-ratio: 3/4; object-fit: cover;
+      border-radius: 12px; border: 1px solid var(--border);
+    }
+    .tryon-item button {
+      position: absolute; top: 4px; right: 4px;
+      width: 22px; height: 22px; border-radius: 50%;
+      border: none; background: rgba(0,0,0,0.45); color: white;
+      font-size: 0.7rem; cursor: pointer;
+    }
+    .tryon-picks {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 0.6rem;
+      max-height: 320px; overflow-y: auto;
+    }
+    .tryon-pick {
+      cursor: pointer; border-radius: 10px; overflow: hidden;
+      border: 2px solid transparent; transition: border-color 0.15s;
+    }
+    .tryon-pick:hover, .tryon-pick.on-board { border-color: var(--accent); }
+    .tryon-pick img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; }
+
+    /* Shop toolbar */
+    .shop-toolbar {
+      display: flex; flex-wrap: wrap; gap: 0.6rem;
+      align-items: center; margin-bottom: 1.2rem;
+    }
+    .shop-toolbar select, .shop-toolbar input {
+      padding: 0.45rem 0.7rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      font-family: inherit; font-size: 0.82rem;
+      color: var(--text);
+    }
+    .promo-row {
+      display: flex; gap: 0.4rem; margin-bottom: 0.75rem;
+    }
+    .promo-row input {
+      flex: 1; padding: 0.5rem 0.7rem;
+      border-radius: 10px; border: 1px solid var(--border);
+      background: var(--bg); font-family: inherit; font-size: 0.82rem;
+      color: var(--text);
+    }
+    .promo-row button {
+      padding: 0.5rem 0.8rem; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg-card);
+      font-family: inherit; font-size: 0.8rem; color: var(--text);
+    }
+    .promo-applied {
+      font-size: 0.78rem; color: var(--accent-dark); margin-bottom: 0.5rem;
+    }
+    .order-history {
+      margin-top: 1rem; padding-top: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+    .order-history h4 {
+      font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--text-soft);
+    }
+    .order-item {
+      font-size: 0.78rem; color: var(--text-soft);
+      padding: 0.35rem 0; border-bottom: 1px solid var(--border);
+    }
+    .size-guide-btn {
+      font-size: 0.78rem; color: var(--accent-dark);
+      background: none; border: none; text-decoration: underline;
+      font-family: inherit; cursor: pointer; margin-top: 0.3rem;
+    }
+    .size-table {
+      width: 100%; border-collapse: collapse; font-size: 0.82rem;
+      margin-top: 0.5rem;
+    }
+    .size-table th, .size-table td {
+      border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: center;
+    }
+    .size-table th { background: var(--bg); }
+    .theme-toggle {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--bg-card);
+      font-size: 1rem; cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .empty-cute {
+      text-align: center; padding: 2.5rem 1rem; color: var(--text-soft);
+    }
+    .empty-cute .emoji { font-size: 2.2rem; margin-bottom: 0.6rem; }
+    .empty-cute p { font-size: 0.9rem; line-height: 1.5; }
+    .share-btn {
+      font-size: 0.78rem; padding: 0.35rem 0.7rem;
+      border-radius: 8px; border: 1px solid var(--border);
+      background: var(--bg); font-family: inherit; color: var(--text);
+      cursor: pointer;
+    }
+
+
+    /* ===== CUTE EXTRAS ===== */
+    .sticker-layer {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      overflow: hidden;
+    }
+    .sticker {
+      position: absolute;
+      top: -40px;
+      font-size: 1rem;
+      animation: fall linear forwards;
+      opacity: 0.85;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
+    }
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.9; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0.3; }
+    }
+    .sticker-toggle {
+      position: fixed;
+      bottom: 90px;
+      left: 18px;
+      z-index: 200;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      font-size: 1rem;
+      box-shadow: var(--shadow);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sticker-toggle.off { opacity: 0.55; }
+
+    .outfit-card, .shop-card {
+      isolation: isolate;
+    }
+    .outfit-card::after, .shop-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--sx, 50%) var(--sy, 30%), rgba(255,255,255,0.55), transparent 40%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 2;
+      mix-blend-mode: soft-light;
+    }
+    .outfit-card:hover::after, .shop-card:hover::after {
+      opacity: 1;
+      animation: sparkle 1.2s ease infinite;
+    }
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.35; }
+      50% { opacity: 0.85; }
+    }
+    .sparkle-dot {
+      position: absolute;
+      width: 4px; height: 4px;
+      background: #fff;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 5;
+      box-shadow: 0 0 6px #fff, 0 0 10px rgba(255,200,210,0.8);
+      animation: twinkle 0.8s ease-out forwards;
+    }
+    @keyframes twinkle {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(1.5) translateY(-12px); opacity: 0; }
+    }
+
+    .cute-toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.65rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      box-shadow: 0 8px 28px rgba(61,58,54,0.12);
+      z-index: 400;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    .cute-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+
+    .heart-burst {
+      position: fixed;
+      pointer-events: none;
+      z-index: 500;
+      font-size: 1rem;
+      animation: burst 0.9s ease-out forwards;
+    }
+    @keyframes burst {
+      0% { transform: translate(0,0) scale(0.4); opacity: 1; }
+      100% { transform: translate(var(--bx), var(--by)) scale(1.2); opacity: 0; }
+    }
+
+    .music-progress {
+      background: rgba(212, 181, 176, 0.25) !important;
+      height: 5px !important;
+      border-radius: 10px !important;
+      overflow: hidden;
+    }
+    .music-progress-bar {
+      background: linear-gradient(90deg, var(--rose), var(--pink), var(--accent)) !important;
+      height: 100% !important;
+      border-radius: 10px !important;
+      transition: width 0.15s linear;
+    }
+    .sound-toggle {
+      position: fixed;
+      bottom: 90px;
+      left: 66px;
+      z-index: 200;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      font-size: 0.95rem;
+      box-shadow: var(--shadow);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sound-toggle.off { opacity: 0.5; }
+
+  </style>
+</head>
+<body>
+  <div class="wallpaper" id="wallpaper"></div>
+  <div class="cursor-bubble" id="cursor"></div>
+
+  <div class="sticker-layer" id="stickerLayer"></div>
+  <div class="cute-toast" id="cuteToast"></div>
+      <button class="sticker-toggle" id="stickerToggle" onclick="toggleStickers()" title="Stickers">🎀</button>
+  <button class="sound-toggle" id="soundToggle" onclick="toggleSound()" title="Soft click">🔊</button>
+
+
+  <header>
+    <div class="header-inner">
+      <a href="#" class="logo" onclick="showAll(); return false;">Calm <span>Fits</span></a>
+      <nav>
+        <a href="#" class="active" id="nav-all" onclick="showAll(); return false;" data-i18n="navAll">All</a>
+        <a href="#" class="nav-collections" id="nav-collections" onclick="showCollectionsPanel(); return false;">
+          <span data-i18n="navCollections">Collections</span>
+          <span class="badge" id="fav-count" style="display:none;">0</span>
+        </a>
+        <a href="#" id="nav-shop" onclick="showShop(); return false;" data-i18n="navShop">Shop</a>
+        <a href="#" id="nav-tryon" onclick="showTryOn(); return false;" data-i18n="navTryOn">Try-on</a>
+        <button class="cart-btn nav-cart-btn" onclick="openCart()" title="Cart">
+          🛒 <span data-i18n="cart">Cart</span>
+          <span class="cart-badge" id="cartBadgeNav">0</span>
+        </button>
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Theme">☾</button>
+        <div class="lang-toggle">
+          <button id="btn-en" class="active" onclick="setLang('en')">EN</button>
+          <button id="btn-in" onclick="setLang('in')">IN</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" id="heroSection">
+    <h1 data-i18n="heroTitle">Find outfits that feel calm</h1>
+    <p data-i18n="heroDesc">Soft collections for days that want to feel a little quieter & prettier.</p>
+  </section>
+
+  <div class="search-wrap" id="searchSection">
+    <div class="search-box">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Search outfits you love..." oninput="filterOutfits()" />
+    </div>
+  </div>
+
+  <div class="categories" id="categories"></div>
+
+  <div class="main browse-main" id="browseMain">
+    <div>
+      <div class="view-header" id="viewHeader" style="display:none;">
+        <button class="back-btn" onclick="showAll()" data-i18n="back">← Back</button>
+        <h2 class="section-title" id="viewTitle" style="margin:0;"></h2>
+      </div>
+      <h2 class="section-title" id="gridTitle" data-i18n="allOutfits">All Outfits</h2>
+      <div class="outfit-grid" id="outfitGrid"></div>
+    </div>
+
+    <aside class="collections-panel" id="collectionsPanel">
+      <h2>♡ <span data-i18n="myCollections">My Collections</span></h2>
+      <p class="sub" data-i18n="collectionsSub">Save your favorites & give them a cute name</p>
+      <div class="create-collection">
+        <input type="text" id="newCollectionName" data-i18n-placeholder="newCollectionPlaceholder" placeholder="New collection name..." />
+        <button onclick="createCollection()" data-i18n="createBtn">Create</button>
+      </div>
+      <div class="collection-list" id="collectionList"></div>
+    </aside>
+  </div>
+
+  
+  <!-- Calm Shop -->
+  <div class="shop-section" id="shopSection">
+    <div class="shop-header">
+      <h2 data-i18n="shopTitle">Calm Shop</h2>
+      <button class="cart-btn" onclick="openCart()">
+        🛒 <span data-i18n="cart">Cart</span>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+    <div class="shop-toolbar">
+      <select id="shopSort" onchange="renderShop()">
+        <option value="default" data-i18n="sortDefault">Sort: Default</option>
+        <option value="price-asc" data-i18n="sortLow">Price: Low → High</option>
+        <option value="price-desc" data-i18n="sortHigh">Price: High → Low</option>
+        <option value="name" data-i18n="sortName">Name A–Z</option>
+      </select>
+      <select id="shopCatFilter" onchange="renderShop()">
+        <option value="all">All categories</option>
+      </select>
+    </div>
+    <div class="shop-grid" id="shopGrid"></div>
+  </div>
+
+  <!-- Cart drawer -->
+  <div class="cart-overlay" id="cartOverlay" onclick="if(event.target===this)closeCart()">
+    <div class="cart-drawer">
+      <h3>
+        <span data-i18n="yourCart">Your Cart</span>
+        <button class="cart-close" onclick="closeCart()">✕</button>
+      </h3>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-footer">
+        <div class="cart-total">
+          <span data-i18n="total">Total</span>
+          <span id="cartTotal">Rp 0</span>
+        </div>
+        <div class="promo-row">
+          <input type="text" id="promoInput" placeholder="Promo code" data-i18n-placeholder="promoPlaceholder" />
+          <button onclick="applyPromo()" data-i18n="applyPromo">Apply</button>
+        </div>
+        <div class="promo-applied" id="promoMsg" style="display:none;"></div>
+        <div class="checkout-fields">
+          <label data-i18n="labelName">Full name</label>
+          <input type="text" id="checkoutName" data-i18n-placeholder="phName" placeholder="Your name" autocomplete="name" />
+          <label data-i18n="labelPhone">Phone number</label>
+          <input type="tel" id="checkoutPhone" data-i18n-placeholder="phPhone" placeholder="08xxxxxxxxxx" autocomplete="tel" />
+        </div>
+        <div class="pay-methods">
+          <div class="pay-methods-label" data-i18n="payMethod">Payment method</div>
+          <div class="pay-options">
+            <button type="button" class="pay-option" id="pay-dana" onclick="selectPay('dana')">
+              <span class="pay-logo">💙</span>Dana
+            </button>
+            <button type="button" class="pay-option" id="pay-shopeepay" onclick="selectPay('shopeepay')">
+              <span class="pay-logo">🧡</span>ShopeePay
+            </button>
+          </div>
+        </div>
+        <button class="cart-checkout" onclick="checkout()" data-i18n="checkout">Checkout</button>
+        <div class="order-history" id="orderHistory"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="tryon-section" id="tryonSection">
+    <div class="shop-header">
+      <h2 data-i18n="tryOnTitle">Try-on Board</h2>
+      <button class="cart-btn" onclick="clearTryOn()" data-i18n="clearBoard">Clear board</button>
+    </div>
+    <p style="text-align:center;color:var(--text-soft);font-size:0.88rem;margin-bottom:1rem;" data-i18n="tryOnHint">Tap outfits below to mix & match your look</p>
+    <div class="tryon-board" id="tryonBoard"></div>
+    <h3 style="font-size:0.95rem;margin-bottom:0.7rem;color:var(--text-soft);" data-i18n="pickOutfits">Pick outfits</h3>
+    <div class="tryon-picks" id="tryonPicks"></div>
+  </div>
+
+  <footer>Calm Fits · soft & calm outfits</footer>
+
+  <div class="music-player" id="musicPlayer">
+    <button class="music-btn" id="playBtn" onclick="togglePlay()">▶</button>
+    <div class="music-info">
+      <div class="music-title">Ghost</div>
+      <div class="music-artist">Yel</div>
+      <div class="music-progress"><div class="music-progress-bar" id="progressBar"></div></div>
+    </div>
+    <audio id="audio" src="audio/ghost.mp3" preload="metadata"></audio>
+  </div>
+
+  
+  <div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+    <div class="detail-modal">
+      <button class="detail-close" onclick="closeDetail()">✕</button>
+      <img id="detailImg" src="" alt="" />
+      <div class="detail-body">
+        <h3 id="detailName"></h3>
+        <div class="detail-cat" id="detailCat"></div>
+        <p class="detail-desc" id="detailDesc"></p>
+        <div class="detail-actions">
+          <button class="primary" id="detailFavBtn" onclick="detailToggleFav()">♡ Favorite</button>
+          <button id="detailColBtn" onclick="detailAddCollection()">+ Collection</button>
+          <button id="detailCartBtn" onclick="detailAddCart()" data-i18n="addToCart">Add to cart</button>
+        </div>
+        <button class="size-guide-btn" onclick="showSizeGuide()" data-i18n="sizeGuide">Size guide</button>
+        <div id="sizeGuideBox" style="display:none;">
+          <table class="size-table">
+            <tr><th>Size</th><th>Bust</th><th>Waist</th><th>Hip</th></tr>
+            <tr><td>S</td><td>82–86</td><td>64–68</td><td>88–92</td></tr>
+            <tr><td>M</td><td>86–90</td><td>68–72</td><td>92–96</td></tr>
+            <tr><td>L</td><td>90–94</td><td>72–76</td><td>96–100</td></tr>
+            <tr><td>XL</td><td>94–98</td><td>76–80</td><td>100–104</td></tr>
+          </table>
+          <p style="font-size:0.72rem;color:var(--text-soft);margin-top:0.4rem;">cm · approximate guide</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <h3 data-i18n="addToCollection">Add to Collection</h3>
+      <div class="modal-list" id="modalList"></div>
+      <button class="modal-close" onclick="closeModal()" data-i18n="close">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const i18n = {
+      en: {
+        navAll: 'All', navCollections: 'Collections', navShop: 'Shop',
+        navTryOn: 'Try-on', tryOnTitle: 'Try-on Board', clearBoard: 'Clear board',
+        tryOnHint: 'Tap outfits below to mix & match your look', pickOutfits: 'Pick outfits',
+        sortDefault: 'Sort: Default', sortLow: 'Price: Low → High', sortHigh: 'Price: High → Low',
+        sortName: 'Name A–Z', promoPlaceholder: 'Promo code', applyPromo: 'Apply',
+        promoOk: 'Promo applied: 10% off ✨', promoBad: 'Invalid code. Try CALM10',
+        sizeGuide: 'Size guide', orderHistoryTitle: 'Recent orders', noOrders: 'No orders yet',
+        emptyGrid: 'No outfits here yet ☁️', emptyBoard: 'Your board is empty — pick some looks below',
+        shareCol: 'Share', shared: 'Collection copied! 📋', colors: 'Colors',
+        detailFav: '♡ Favorite', detailUnfav: '♥ Favorited',
+
+        shopTitle: 'Calm Shop', cart: 'Cart', yourCart: 'Your Cart', total: 'Total',
+        checkout: 'Checkout', addToCart: 'Add to cart', added: 'Added ✓',
+        cartEmpty: 'Your cart is empty ☁️', checkoutMsg: 'Payment successful via {method}! (Demo — no real charge)', payMethod: 'Payment method', selectPayFirst: 'Please select Dana or ShopeePay first',
+        remove: 'Remove',
+        heroTitle: 'Find outfits that feel calm',
+        heroDesc: 'Soft collections for days that want to feel a little quieter & prettier.',
+        searchPlaceholder: 'Search outfits you love...',
+        allOutfits: 'All Outfits', back: '← Back',
+        myCollections: 'My Collections',
+        collectionsSub: 'Save your favorites & give them a cute name',
+        newCollectionPlaceholder: 'New collection name...',
+        createBtn: 'Create', addToCollection: 'Add to Collection', close: 'Close',
+        emptyCollections: 'No collections yet.<br>Create your first one ☁️',
+        emptyOutfits: 'No outfits here yet ☁️',
+        outfit: 'outfit', outfits: 'outfits',
+        confirmDelete: 'Delete this collection?',
+        makeCollectionFirst: 'Create a collection first on the right ☁️',
+        cat_all: 'All', cat_cute: 'Cute', cat_pretty: 'Pretty', cat_comfy: 'Comfy',
+        cat_softgirly: 'Soft & Girly', cat_simple: 'Simple', cat_cozy: 'Cozy',
+        cat_casual: 'Casual', cat_styling: 'Styling', cat_hijabi: 'Hijabi'
+      },
+      in: {
+        navAll: 'Semua', navCollections: 'Koleksi', navShop: 'Toko',
+        navTryOn: 'Coba', tryOnTitle: 'Papan Try-on', clearBoard: 'Kosongkan',
+        tryOnHint: 'Ketuk outfit di bawah untuk mix & match', pickOutfits: 'Pilih outfit',
+        sortDefault: 'Urut: Default', sortLow: 'Harga: Rendah → Tinggi', sortHigh: 'Harga: Tinggi → Rendah',
+        sortName: 'Nama A–Z', promoPlaceholder: 'Kode promo', applyPromo: 'Pakai',
+        promoOk: 'Promo dipakai: diskon 10% ✨', promoBad: 'Kode salah. Coba CALM10',
+        sizeGuide: 'Panduan ukuran', orderHistoryTitle: 'Pesanan terakhir', noOrders: 'Belum ada pesanan',
+        emptyGrid: 'Belum ada outfit di sini ☁️', emptyBoard: 'Papan masih kosong — pilih look di bawah',
+        shareCol: 'Bagikan', shared: 'Koleksi disalin! 📋', colors: 'Warna',
+        detailFav: '♡ Favorit', detailUnfav: '♥ Difavoritkan',
+
+        shopTitle: 'Calm Shop', cart: 'Keranjang', yourCart: 'Keranjangmu', total: 'Total',
+        checkout: 'Checkout', addToCart: 'Tambah ke keranjang', added: 'Ditambah ✓',
+        cartEmpty: 'Keranjang masih kosong ☁️', checkoutMsg: 'Pembayaran berhasil via {method}! (Demo — tidak ada charge sungguhan)', payMethod: 'Metode pembayaran', selectPayFirst: 'Pilih Dana atau ShopeePay dulu ya',
+        remove: 'Hapus',
+        heroTitle: 'Temukan outfit yang menenangkan',
+        heroDesc: 'Koleksi lembut untuk hari-hari yang ingin terasa lebih tenang & indah.',
+        searchPlaceholder: 'Cari outfit yang kamu suka...',
+        allOutfits: 'Semua Outfit', back: '← Kembali',
+        myCollections: 'Koleksiku',
+        collectionsSub: 'Simpan favorit & kasih nama yang lucu',
+        newCollectionPlaceholder: 'Nama koleksi baru...',
+        createBtn: 'Buat', addToCollection: 'Tambah ke Koleksi', close: 'Tutup',
+        emptyCollections: 'Belum ada koleksi.<br>Buat yang pertama yuk ☁️',
+        emptyOutfits: 'Belum ada outfit di sini ☁️',
+        outfit: 'outfit', outfits: 'outfit',
+        confirmDelete: 'Hapus koleksi ini?',
+        makeCollectionFirst: 'Buat koleksi dulu di sebelah kanan ya ☁️',
+        cat_all: 'Semua', cat_cute: 'Cute', cat_pretty: 'Pretty', cat_comfy: 'Comfy',
+        cat_softgirly: 'Soft & Girly', cat_simple: 'Simple', cat_cozy: 'Cozy',
+        cat_casual: 'Casual', cat_styling: 'Styling', cat_hijabi: 'Hijabi'
+      }
+    };
+
+    let lang = localStorage.getItem('calmFits_lang') || 'en';
+
+    function t(key) {
+      return (i18n[lang] && i18n[lang][key]) || i18n.en[key] || key;
+    }
+
+    function setLang(l) {
+      lang = l;
+      localStorage.setItem('calmFits_lang', l);
+      document.getElementById('btn-en').classList.toggle('active', l === 'en');
+      document.getElementById('btn-in').classList.toggle('active', l === 'in');
+      applyI18n();
+      renderCategories();
+      renderOutfits();
+      renderCollections();
+    }
+
+    function applyI18n() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        el.innerHTML = t(el.getAttribute('data-i18n'));
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+      });
+      if (currentView === 'all') {
+        const titleEl = document.getElementById('gridTitle');
+        if (currentCategory === 'all') {
+          titleEl.textContent = t('allOutfits');
+        } else {
+          const cat = categories.find(c => c.id === currentCategory);
+          titleEl.textContent = (cat ? t(cat.i18nKey) : '') + ' Outfits';
+        }
+      }
+    }
+
+    const categories = [
+      { id: 'all', emoji: '✦', i18nKey: 'cat_all' },
+      { id: 'cute', emoji: '👗', i18nKey: 'cat_cute' },
+      { id: 'pretty', emoji: '🎀', i18nKey: 'cat_pretty' },
+      { id: 'comfy', emoji: '🧸', i18nKey: 'cat_comfy' },
+      { id: 'soft-girly', emoji: '🩰', i18nKey: 'cat_softgirly' },
+      { id: 'simple', emoji: '🖤', i18nKey: 'cat_simple' },
+      { id: 'cozy', emoji: '☁️', i18nKey: 'cat_cozy' },
+      { id: 'casual', emoji: '🎧', i18nKey: 'cat_casual' },
+      { id: 'styling', emoji: '✦', i18nKey: 'cat_styling' },
+      { id: 'hijabi', emoji: '🧕', i18nKey: 'cat_hijabi' }
+    ];
+
+    // Wallpaper map
+    const wallpapers = {
+      all: 'images/wallpaper-all.jpg',
+      cute: 'images/wallpaper-cute.jpg',
+      pretty: 'images/wallpaper-pretty.jpg',
+      comfy: 'images/garden-cat.jpg',
+      'soft-girly': 'images/rose-mirror.jpg',
+      simple: 'images/swans.jpg',
+      cozy: 'images/fish-bowls.jpg',
+      casual: 'images/flower-bike.jpg',
+      styling: 'images/misty-flowers.jpg',
+      hijabi: 'images/cherry-water.jpg'
+    };
+
+    function updateWallpaper() {
+      const wp = document.getElementById('wallpaper');
+      const src = wallpapers[currentCategory] || wallpapers.all;
+      wp.style.backgroundImage = `url('${src}')`;
+    }
+
+    const outfits = [
+      // CUTE (user photos)
+      { id: 1, name: 'Kawaii', category: 'cute', img: 'images/kawaii.jpg', color: 'pink'  },
+      { id: 2, name: 'Korean Casual', category: 'cute', img: 'images/korean-casual.jpg', color: 'beige'  },
+      { id: 3, name: 'Y2K Cute', category: 'cute', img: 'images/y2k-cute.jpg', color: 'pink'  },
+      { id: 4, name: 'College Girl', category: 'cute', img: 'images/college-girl.jpg', color: 'beige'  },
+      { id: 5, name: 'Comfy Cute', category: 'cute', img: 'images/comfy-cute.jpg', color: 'beige'  },
+      { id: 6, name: 'Graphic Tee Outfit', category: 'cute', img: 'images/graphic-tee.jpg', color: 'black'  },
+      { id: 7, name: 'Preppy', category: 'cute', img: 'images/preppy.jpg', color: 'beige'  },
+      { id: 8, name: 'Soft Girl', category: 'cute', img: 'images/soft-girl.jpg', color: 'pink'  },
+
+      // PRETTY (user photos - new)
+      { id: 25, name: 'Cottagecore', category: 'pretty', img: 'images/cottagecore.jpg', color: 'green'  },
+      { id: 26, name: 'Elegant', category: 'pretty', img: 'images/elegant.jpg', color: 'beige'  },
+      { id: 27, name: 'Fairycore', category: 'pretty', img: 'images/fairycore.jpg', color: 'green'  },
+      { id: 28, name: 'Feminine', category: 'pretty', img: 'images/feminine.jpg', color: 'pink'  },
+      { id: 29, name: 'Balletcore', category: 'pretty', img: 'images/balletcore.jpg', color: 'pink'  },
+      { id: 30, name: 'Coquette', category: 'pretty', img: 'images/coquette.jpg', color: 'pink'  },
+      { id: 31, name: 'Princesscore', category: 'pretty', img: 'images/princesscore.jpg', color: 'pink'  },
+      { id: 32, name: 'Romantic', category: 'pretty', img: 'images/romantic.jpg', color: 'pink'  },
+
+      // COMFY
+      { id: 40, name: 'T-shirt & Baggy Jeans', category: 'comfy', img: 'images/tshirt-baggy.jpg', color: 'blue'  },
+      { id: 41, name: 'Oversized Hoodie', category: 'comfy', img: 'images/oversized-hoodie.jpg', color: 'beige'  },
+      { id: 42, name: 'Jogger Outfit', category: 'comfy', img: 'images/jogger-outfit.jpg', color: 'black'  },
+      { id: 43, name: 'Cozy Knitwear', category: 'comfy', img: 'images/cozy-knitwear.jpg', color: 'beige'  },
+      { id: 44, name: 'Streetwear', category: 'comfy', img: 'images/streetwear.jpg', color: 'blue'  },
+      { id: 45, name: 'Soft Girl Casual', category: 'comfy', img: 'images/soft-girl-casual.jpg', color: 'beige'  },
+      { id: 46, name: 'Fluffy Sweater', category: 'comfy', img: 'images/fluffy-sweater.jpg', color: 'green'  },
+      { id: 47, name: 'Minimalist Casual', category: 'comfy', img: 'images/minimalist-casual.jpg', color: 'blue'  },
+
+      // SOFT & GIRLY
+      { id: 50, name: 'Preppy Feminine', category: 'soft-girly', img: 'images/preppy-feminine.jpg', color: 'black'  },
+      { id: 51, name: 'Korean Feminine', category: 'soft-girly', img: 'images/korean-feminine.jpg', color: 'blue'  },
+      { id: 52, name: 'Angelcore', category: 'soft-girly', img: 'images/angelcore.jpg', color: 'white'  },
+      { id: 53, name: 'Princesscore', category: 'soft-girly', img: 'images/princesscore-soft.jpg', color: 'beige'  },
+      { id: 54, name: 'Soft Romantic', category: 'soft-girly', img: 'images/soft-romantic.jpg', color: 'pink'  },
+      { id: 55, name: 'Vintage Feminine', category: 'soft-girly', img: 'images/vintage-feminine.jpg', color: 'brown'  },
+      { id: 56, name: 'Girly Casual', category: 'soft-girly', img: 'images/girly-casual.jpg', color: 'pink'  },
+      { id: 57, name: 'Dollcore', category: 'soft-girly', img: 'images/dollcore.jpg', color: 'red'  },
+
+      // HIJABI
+      { id: 23, name: 'Soft Hijab Look', category: 'hijabi', img: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=400&h=550&fit=crop', color: 'beige'  },
+      { id: 24, name: 'Elegant Hijabi', category: 'hijabi', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=550&fit=crop', color: 'beige'  }
+    ];
+
+    let currentCategory = 'all';
+    let currentView = 'all';
+    let currentCollectionId = null;
+    let favorites = JSON.parse(localStorage.getItem('calmFits_favorites') || '[]');
+    let collections = JSON.parse(localStorage.getItem('calmFits_collections') || '[]');
+
+    // Cursor bubble
+    const cursor = document.getElementById('cursor');
+    if (cursor) {
+      document.body.style.cursor = 'none';
+      document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        cursor.style.opacity = '1';
+      });
+      document.addEventListener('mousedown', () => cursor.classList.add('hover'));
+      document.addEventListener('mouseup', () => cursor.classList.remove('hover'));
+      const hoverSel = 'button, a, .cat-btn, .fav-btn, .collection-item, input, select, .outfit-card, .shop-card, .color-chip, .tryon-pick, .pay-option';
+      document.addEventListener('mouseover', (e) => {
+        if (e.target.closest(hoverSel)) cursor.classList.add('hover');
+      });
+      document.addEventListener('mouseout', (e) => {
+        if (e.target.closest(hoverSel)) cursor.classList.remove('hover');
+      });
+      document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
+      document.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; });
+    }
+
+    // Music
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('playBtn');
+    const progressBar = document.getElementById('progressBar');
+
+    function togglePlay() {
+      if (audio.paused) {
+        audio.play();
+        playBtn.textContent = '❚❚';
+      } else {
+        audio.pause();
+        playBtn.textContent = '▶';
+      }
+    }
+
+    audio.addEventListener('timeupdate', () => {
+      if (audio.duration) {
+        progressBar.style.width = (audio.currentTime / audio.duration * 100) + '%';
+      }
+    });
+    audio.addEventListener('ended', () => {
+      playBtn.textContent = '▶';
+      progressBar.style.width = '0%';
+    });
+
+
+    // ========== SHOP ==========
+    // Different prices per product (IDR)
+    const shopProducts = [
+      { id: 's1', outfitId: 1, name: 'Kawaii', price: 189000, img: 'images/kawaii.jpg' },
+      { id: 's2', outfitId: 2, name: 'Korean Casual', price: 165000, img: 'images/korean-casual.jpg' },
+      { id: 's3', outfitId: 3, name: 'Y2K Cute', price: 210000, img: 'images/y2k-cute.jpg' },
+      { id: 's4', outfitId: 5, name: 'Comfy Cute', price: 155000, img: 'images/comfy-cute.jpg' },
+      { id: 's5', outfitId: 8, name: 'Soft Girl', price: 175000, img: 'images/soft-girl.jpg' },
+      { id: 's6', outfitId: 25, name: 'Cottagecore', price: 245000, img: 'images/cottagecore.jpg' },
+      { id: 's7', outfitId: 26, name: 'Elegant', price: 289000, img: 'images/elegant.jpg' },
+      { id: 's8', outfitId: 27, name: 'Fairycore', price: 268000, img: 'images/fairycore.jpg' },
+      { id: 's9', outfitId: 29, name: 'Balletcore', price: 198000, img: 'images/balletcore.jpg' },
+      { id: 's10', outfitId: 30, name: 'Coquette', price: 225000, img: 'images/coquette.jpg' },
+      { id: 's11', outfitId: 40, name: 'T-shirt & Baggy Jeans', price: 149000, img: 'images/tshirt-baggy.jpg' },
+      { id: 's12', outfitId: 41, name: 'Oversized Hoodie', price: 179000, img: 'images/oversized-hoodie.jpg' },
+      { id: 's13', outfitId: 42, name: 'Jogger Outfit', price: 199000, img: 'images/jogger-outfit.jpg' },
+      { id: 's14', outfitId: 43, name: 'Cozy Knitwear', price: 215000, img: 'images/cozy-knitwear.jpg' },
+      { id: 's15', outfitId: 50, name: 'Preppy Feminine', price: 259000, img: 'images/preppy-feminine.jpg' },
+      { id: 's16', outfitId: 51, name: 'Korean Feminine', price: 235000, img: 'images/korean-feminine.jpg' },
+      { id: 's17', outfitId: 52, name: 'Angelcore', price: 275000, img: 'images/angelcore.jpg' },
+      { id: 's18', outfitId: 57, name: 'Dollcore', price: 249000, img: 'images/dollcore.jpg' },
+      { id: 's19', outfitId: 46, name: 'Fluffy Sweater', price: 169000, img: 'images/fluffy-sweater.jpg' },
+      { id: 's20', outfitId: 54, name: 'Soft Romantic', price: 229000, img: 'images/soft-romantic.jpg' }
+    ];
+
+    let cart = JSON.parse(localStorage.getItem('calmFits_cart') || '[]');
+
+    function formatPrice(n) {
+      return 'Rp ' + n.toLocaleString('id-ID');
+    }
+
+    function saveCart() {
+      localStorage.setItem('calmFits_cart', JSON.stringify(cart));
+      updateCartBadge();
+    }
+
+    function updateCartBadge() {
+      const total = cart.reduce((s, i) => s + i.qty, 0);
+      document.querySelectorAll('.cart-badge').forEach(badge => {
+        if (total > 0) {
+          badge.style.display = 'flex';
+          badge.textContent = total;
+        } else {
+          badge.style.display = 'none';
+        }
+      });
+    }
+
+    function showShop() {
+      currentView = 'shop';
+      hideTryOn();
+      document.getElementById('heroSection').classList.add('hide');
+      document.getElementById('searchSection').classList.add('hide');
+      document.getElementById('categories').classList.add('hide');
+      
+      document.getElementById('browseMain').classList.add('hide');
+      document.getElementById('shopSection').classList.add('show');
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('nav-shop').classList.add('active');
+      renderShop();
+      updateWallpaper();
+    }
+
+    function hideShop() {
+      document.getElementById('heroSection')?.classList.remove('hide');
+      document.getElementById('searchSection')?.classList.remove('hide');
+      document.getElementById('categories')?.classList.remove('hide');
+      
+      document.getElementById('browseMain')?.classList.remove('hide');
+      document.getElementById('shopSection')?.classList.remove('show');
+    }
+
+    function renderShop() {
+      const grid = document.getElementById('shopGrid');
+      let list = [...shopProducts];
+      const catF = document.getElementById('shopCatFilter')?.value || 'all';
+      const sort = document.getElementById('shopSort')?.value || 'default';
+      if (catF !== 'all') {
+        list = list.filter(p => {
+          const o = outfits.find(x => x.id === p.outfitId);
+          return o && o.category === catF;
+        });
+      }
+      if (sort === 'price-asc') list.sort((a,b) => a.price - b.price);
+      else if (sort === 'price-desc') list.sort((a,b) => b.price - a.price);
+      else if (sort === 'name') list.sort((a,b) => a.name.localeCompare(b.name));
+      if (!list.length) {
+        grid.innerHTML = `<div class="empty-cute" style="grid-column:1/-1"><div class="emoji">🛍️</div><p>${t('emptyGrid')}</p></div>`;
+        return;
+      }
+      grid.innerHTML = list.map(p => {
+        const inCart = cart.find(c => c.id === p.id);
+        return `
+          <div class="shop-card">
+            <img src="${p.img}" alt="${p.name}" loading="lazy" onclick="openDetail(${p.outfitId})" style="cursor:pointer" />
+            <div class="shop-card-body">
+              <div class="shop-card-name">${p.name}</div>
+              <div class="shop-card-price">${formatPrice(p.price)}</div>
+              <button class="shop-add-btn ${inCart ? 'added' : ''}" onclick="addToCart('${p.id}', this)">
+                ${inCart ? t('added') : t('addToCart')}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+
+    function addOutfitToCart(outfitId, e, btn) {
+      if (e) e.stopPropagation();
+      softClick();
+      let product = shopProducts.find(p => p.outfitId === outfitId);
+      if (!product) {
+        const o = outfits.find(x => x.id === outfitId);
+        if (!o) return;
+        // auto price for non-shop items (stable from id)
+        const price = 149000 + (outfitId % 15) * 8000;
+        product = { id: 'auto_' + outfitId, outfitId, name: o.name, price, img: o.img };
+        // cache into shopProducts so qty works
+        if (!shopProducts.find(p => p.id === product.id)) shopProducts.push(product);
+      }
+      addToCart(product.id, btn);
+      renderOutfits();
+    }
+
+    function addToCart(id, btn) {
+      const product = shopProducts.find(p => p.id === id);
+      if (!product) return;
+      softClick();
+      const existing = cart.find(c => c.id === id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ id: product.id, name: product.name, price: product.price, img: product.img, qty: 1 });
+      }
+      saveCart();
+      if (btn) {
+        btn.textContent = t('added');
+        btn.classList.add('added');
+      }
+      showToast('Added to cart 🛍️');
+      renderCart();
+    }
+
+    function changeQty(id, delta) {
+      const item = cart.find(c => c.id === id);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(c => c.id !== id);
+      }
+      saveCart();
+      renderCart();
+      if (currentView === 'shop') renderShop();
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(c => c.id !== id);
+      saveCart();
+      renderCart();
+      if (currentView === 'shop') renderShop();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItems');
+      if (cart.length === 0) {
+        container.innerHTML = `<div class="empty-cute"><div class="emoji">🛒</div><p>${t('cartEmpty')}</p></div>`;
+        document.getElementById('cartTotal').textContent = formatPrice(0);
+        return;
+      }
+      container.innerHTML = cart.map(item => `
+        <div class="cart-item">
+          <img src="${item.img}" alt="${item.name}" />
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-price">${formatPrice(item.price)}</div>
+            <div class="cart-item-qty">
+              <button onclick="changeQty('${item.id}', -1)">−</button>
+              <span>${item.qty}</span>
+              <button onclick="changeQty('${item.id}', 1)">+</button>
+            </div>
+          </div>
+          <button class="cart-remove" onclick="removeFromCart('${item.id}')" title="${t('remove')}">✕</button>
+        </div>
+      `).join('');
+      let total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+      if (typeof promoActive !== 'undefined' && promoActive) total = Math.round(total * 0.9);
+      document.getElementById('cartTotal').textContent = formatPrice(total);
+      if (typeof renderOrderHistory === 'function') renderOrderHistory();
+    }
+
+    function openCart() {
+      renderCart();
+      document.getElementById('cartOverlay').classList.add('show');
+    }
+
+    function closeCart() {
+      document.getElementById('cartOverlay').classList.remove('show');
+    }
+
+    let selectedPay = null;
+
+    function selectPay(method) {
+      selectedPay = method;
+      document.getElementById('pay-dana').classList.toggle('selected', method === 'dana');
+      document.getElementById('pay-shopeepay').classList.toggle('selected', method === 'shopeepay');
+    }
+
+    function checkout() {
+      if (cart.length === 0) return;
+      const name = (document.getElementById('checkoutName')?.value || '').trim();
+      const phone = (document.getElementById('checkoutPhone')?.value || '').trim();
+      if (!name || !phone) {
+        alert(t('fillNamePhone'));
+        return;
+      }
+      if (!selectedPay) {
+        alert(t('selectPayFirst'));
+        return;
+      }
+      const methodName = selectedPay === 'dana' ? 'Dana' : 'ShopeePay';
+      let total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+      if (promoActive) total = Math.round(total * 0.9);
+      if (typeof saveOrder === 'function') saveOrder(methodName, total, name, phone);
+      heartConfetti(window.innerWidth/2, window.innerHeight/2);
+      showToast('Yay! Order placed ✨');
+      alert(
+        t('checkoutMsg')
+          .replace('{method}', methodName)
+          .replace('{name}', name)
+          .replace('{phone}', phone)
+      );
+      cart = [];
+      selectedPay = null;
+      promoActive = false;
+      const pi = document.getElementById('promoInput');
+      if (pi) pi.value = '';
+      const pm = document.getElementById('promoMsg');
+      if (pm) pm.style.display = 'none';
+      const cn = document.getElementById('checkoutName');
+      const cp = document.getElementById('checkoutPhone');
+      if (cn) cn.value = '';
+      if (cp) cp.value = '';
+      document.getElementById('pay-dana').classList.remove('selected');
+      document.getElementById('pay-shopeepay').classList.remove('selected');
+      saveCart();
+      renderCart();
+      if (currentView === 'shop') renderShop();
+      closeCart();
+    }
+
+
+    // ===== FEATURES: colors, detail, try-on, promo, orders, dark, share =====
+    let currentColor = 'all';
+    let tryOnBoard = JSON.parse(localStorage.getItem('calmFits_tryon') || '[]');
+    let promoActive = false; // 10% off with CALM10
+    let orders = JSON.parse(localStorage.getItem('calmFits_orders') || '[]');
+    let detailOutfitId = null;
+
+    const COLOR_META = {
+      all: { label: 'All', bg: 'var(--bg-card)' },
+      pink: { label: 'Pink', bg: '#E8C4C0' },
+      beige: { label: 'Beige', bg: '#D4C4B0' },
+      black: { label: 'Black', bg: '#3D3A36' },
+      white: { label: 'White', bg: '#F5F0EB' },
+      blue: { label: 'Blue', bg: '#A8B8C8' },
+      green: { label: 'Green', bg: '#A8B5A2' },
+      brown: { label: 'Brown', bg: '#A08060' },
+      red: { label: 'Red', bg: '#C07070' }
+    };
+
+    function renderColorFilters() {
+      const el = document.getElementById('colorFilters');
+      if (!el) return;
+      el.innerHTML = Object.keys(COLOR_META).map(c => {
+        const m = COLOR_META[c];
+        if (c === 'all') {
+          return `<button class="color-chip all-chip ${currentColor==='all'?'active':''}" onclick="setColorFilter('all')">${t('colors') || 'Colors'}: All</button>`;
+        }
+        return `<button class="color-chip ${currentColor===c?'active':''}" style="background:${m.bg}" title="${m.label}" onclick="setColorFilter('${c}')"></button>`;
+      }).join('');
+    }
+
+    function setColorFilter(c) {
+      currentColor = c;
+      /* color palette removed */
+      filterOutfits();
+    }
+
+    // Patch filter to respect color - override get filtered list helper
+    function getFilteredOutfits() {
+      const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+      return outfits.filter(o => {
+        if (currentCategory !== 'all' && o.category !== currentCategory) return false;
+        if (currentColor !== 'all' && o.color !== currentColor) return false;
+        if (q && !o.name.toLowerCase().includes(q)) return false;
+        return true;
+      });
+    }
+
+    // ---- Detail modal ----
+    function openDetail(id) {
+      const o = outfits.find(x => x.id === id);
+      if (!o) return;
+      detailOutfitId = id;
+      document.getElementById('detailImg').src = o.img;
+      document.getElementById('detailName').textContent = o.name;
+      const cat = categories.find(c => c.id === o.category);
+      document.getElementById('detailCat').textContent = (cat ? cat.emoji + ' ' + t(cat.i18nKey) : o.category) + (o.color ? ' · ' + o.color : '');
+      document.getElementById('detailDesc').textContent = `A soft ${o.category.replace('-', ' ')} look — calm, wearable, and made to feel pretty on quiet days.`;
+      const fav = favorites.includes(id);
+      document.getElementById('detailFavBtn').textContent = fav ? t('detailUnfav') : t('detailFav');
+      document.getElementById('sizeGuideBox').style.display = 'none';
+      // cart button only if product exists
+      document.getElementById('detailCartBtn').style.display = 'inline-block';
+      document.getElementById('detailOverlay').classList.add('show');
+    }
+    function closeDetail() {
+      document.getElementById('detailOverlay').classList.remove('show');
+      detailOutfitId = null;
+    }
+    function detailToggleFav() {
+      if (detailOutfitId == null) return;
+      const e = { stopPropagation() {} };
+      toggleFavorite(detailOutfitId, e);
+      const fav = favorites.includes(detailOutfitId);
+      document.getElementById('detailFavBtn').textContent = fav ? t('detailUnfav') : t('detailFav');
+      renderOutfits();
+    }
+    function detailAddCollection() {
+      if (detailOutfitId == null) return;
+      openModal(detailOutfitId);
+    }
+    function detailAddCart() {
+      if (detailOutfitId == null) return;
+      addOutfitToCart(detailOutfitId, null, null);
+      showToast('Added to cart 🛍️');
+    }
+    function showSizeGuide() {
+      const box = document.getElementById('sizeGuideBox');
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // ---- Try-on ----
+    function showTryOn() {
+      currentView = 'tryon';
+      document.getElementById('heroSection')?.classList.add('hide');
+      document.getElementById('searchSection')?.classList.add('hide');
+      document.getElementById('categories')?.classList.add('hide');
+      
+      document.getElementById('browseMain')?.classList.add('hide');
+      document.getElementById('shopSection')?.classList.remove('show');
+      document.getElementById('tryonSection').classList.add('show');
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('nav-tryon')?.classList.add('active');
+      renderTryOn();
+    }
+    function hideTryOn() {
+      document.getElementById('tryonSection')?.classList.remove('show');
+      
+    }
+    function renderTryOn() {
+      const board = document.getElementById('tryonBoard');
+      const picks = document.getElementById('tryonPicks');
+      if (!board || !picks) return;
+      if (tryOnBoard.length === 0) {
+        board.innerHTML = `<div class="empty-cute" style="width:100%"><div class="emoji">🪞</div><p>${t('emptyBoard')}</p></div>`;
+      } else {
+        board.innerHTML = tryOnBoard.map(id => {
+          const o = outfits.find(x => x.id === id);
+          if (!o) return '';
+          return `<div class="tryon-item"><img src="${o.img}" alt="${o.name}" /><button onclick="removeFromTryOn(${id})">✕</button></div>`;
+        }).join('');
+      }
+      picks.innerHTML = outfits.map(o => {
+        const on = tryOnBoard.includes(o.id);
+        return `<div class="tryon-pick ${on?'on-board':''}" onclick="toggleTryOn(${o.id})"><img src="${o.img}" alt="${o.name}" title="${o.name}" /></div>`;
+      }).join('');
+    }
+    function toggleTryOn(id) {
+      const i = tryOnBoard.indexOf(id);
+      if (i > -1) tryOnBoard.splice(i, 1);
+      else tryOnBoard.push(id);
+      localStorage.setItem('calmFits_tryon', JSON.stringify(tryOnBoard));
+      renderTryOn();
+    }
+    function removeFromTryOn(id) {
+      tryOnBoard = tryOnBoard.filter(x => x !== id);
+      localStorage.setItem('calmFits_tryon', JSON.stringify(tryOnBoard));
+      renderTryOn();
+    }
+    function clearTryOn() {
+      tryOnBoard = [];
+      localStorage.setItem('calmFits_tryon', JSON.stringify(tryOnBoard));
+      renderTryOn();
+    }
+
+    // ---- Dark mode ----
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+      const dark = document.body.classList.contains('dark');
+      localStorage.setItem('calmFits_theme', dark ? 'dark' : 'light');
+      document.getElementById('themeToggle').textContent = dark ? '☀' : '☾';
+    }
+    function loadTheme() {
+      if (localStorage.getItem('calmFits_theme') === 'dark') {
+        document.body.classList.add('dark');
+        const btn = document.getElementById('themeToggle');
+        if (btn) btn.textContent = '☀';
+      }
+    }
+
+    // ---- Promo ----
+    function applyPromo() {
+      const code = (document.getElementById('promoInput')?.value || '').trim().toUpperCase();
+      const msg = document.getElementById('promoMsg');
+      if (code === 'CALM10') {
+        promoActive = true;
+        msg.style.display = 'block';
+        msg.textContent = t('promoOk');
+        renderCart();
+      } else {
+        promoActive = false;
+        msg.style.display = 'block';
+        msg.textContent = t('promoBad');
+        renderCart();
+      }
+    }
+
+    // ---- Orders ----
+    function saveOrder(method, total, customerName, customerPhone) {
+      orders.unshift({
+        id: Date.now(),
+        date: new Date().toLocaleString(),
+        method,
+        total,
+        customerName: customerName || '',
+        customerPhone: customerPhone || '',
+        items: cart.map(c => ({ name: c.name, qty: c.qty }))
+      });
+      orders = orders.slice(0, 10);
+      localStorage.setItem('calmFits_orders', JSON.stringify(orders));
+    }
+    function renderOrderHistory() {
+      const el = document.getElementById('orderHistory');
+      if (!el) return;
+      if (orders.length === 0) {
+        el.innerHTML = `<h4>${t('orderHistoryTitle')}</h4><div class="order-item">${t('noOrders')}</div>`;
+        return;
+      }
+      el.innerHTML = `<h4>${t('orderHistoryTitle')}</h4>` + orders.slice(0, 5).map(o =>
+        `<div class="order-item">${o.date} · ${o.customerName || '—'} · ${o.customerPhone || ''} · ${o.method} · ${formatPrice(o.total)}</div>`
+      ).join('');
+    }
+
+    // ---- Share collection ----
+    function shareCollection(colId) {
+      const col = collections.find(c => c.id === colId);
+      if (!col) return;
+      const names = col.outfitIds.map(id => {
+        const o = outfits.find(x => x.id === id);
+        return o ? o.name : null;
+      }).filter(Boolean);
+      const text = `Calm Fits · ${col.name}\n${names.map(n => '• ' + n).join('\n') || '(empty)'}\n✨`;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => alert(t('shared'))).catch(() => prompt('Copy:', text));
+      } else {
+        prompt('Copy:', text);
+      }
+    }
+
+    // PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+
+
+    // ===== CUTE FEATURES =====
+    let stickersOn = localStorage.getItem('calmFits_stickers') !== 'off';
+    let soundOn = localStorage.getItem('calmFits_sound') !== 'off';
+    let stickerTimer = null;
+
+    function showToast(msg) {
+      const el = document.getElementById('cuteToast');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.remove('show'), 1800);
+    }
+
+    function softClick() {
+      if (!soundOn) return;
+      try {
+        const ctx = softClick.ctx || (softClick.ctx = new (window.AudioContext || window.webkitAudioContext)());
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.value = 680;
+        g.gain.value = 0.04;
+        o.connect(g); g.connect(ctx.destination);
+        o.start();
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+        o.stop(ctx.currentTime + 0.09);
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundOn = !soundOn;
+      localStorage.setItem('calmFits_sound', soundOn ? 'on' : 'off');
+      const btn = document.getElementById('soundToggle');
+      if (btn) {
+        btn.textContent = soundOn ? '🔊' : '🔇';
+        btn.classList.toggle('off', !soundOn);
+      }
+      if (soundOn) softClick();
+    }
+
+    function spawnStickers() {
+      const layer = document.getElementById('stickerLayer');
+      if (!layer || !stickersOn) return;
+      const icons = ['♡', '✨', '🎀', '⋆', '☁️', '🌸', '💫'];
+      const s = document.createElement('div');
+      s.className = 'sticker';
+      s.textContent = icons[Math.floor(Math.random() * icons.length)];
+      s.style.left = Math.random() * 100 + 'vw';
+      s.style.fontSize = (0.7 + Math.random() * 0.8) + 'rem';
+      s.style.animationDuration = (6 + Math.random() * 8) + 's';
+      layer.appendChild(s);
+      setTimeout(() => s.remove(), 15000);
+    }
+
+    function startStickers() {
+      stopStickers();
+      if (!stickersOn) return;
+      stickerTimer = setInterval(spawnStickers, 900);
+      for (let i = 0; i < 4; i++) setTimeout(spawnStickers, i * 200);
+    }
+    function stopStickers() {
+      if (stickerTimer) clearInterval(stickerTimer);
+      stickerTimer = null;
+    }
+    function toggleStickers() {
+      stickersOn = !stickersOn;
+      localStorage.setItem('calmFits_stickers', stickersOn ? 'on' : 'off');
+      const btn = document.getElementById('stickerToggle');
+      if (btn) btn.classList.toggle('off', !stickersOn);
+      if (stickersOn) startStickers();
+      else {
+        stopStickers();
+        const layer = document.getElementById('stickerLayer');
+        if (layer) layer.innerHTML = '';
+      }
+      softClick();
+    }
+
+    function heartConfetti(x, y) {
+      const hearts = ['♡', '♥', '✨', '💕'];
+      for (let i = 0; i < 10; i++) {
+        const el = document.createElement('div');
+        el.className = 'heart-burst';
+        el.textContent = hearts[i % hearts.length];
+        const angle = (Math.PI * 2 * i) / 10;
+        const dist = 40 + Math.random() * 50;
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        el.style.setProperty('--bx', Math.cos(angle) * dist + 'px');
+        el.style.setProperty('--by', Math.sin(angle) * dist + 'px');
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 950);
+      }
+    }
+
+    const MASCOT_LINES = [
+      'hi soft girl ☁️',
+      'you look pretty today 🎀',
+      'drink water~ 💧',
+      'cozy mode on 🧸',
+      'take it slow ✨',
+      'favoritin yang kamu suka ♡',
+      'calm day, cute fit 🌸',
+      'semangat, tapi pelan-pelan ☁️'
+    ];
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('button, .cat-btn, .pay-option, .color-chip, nav a')) softClick();
+    });
+
+
+    // sparkle on card hover
+    document.addEventListener('mousemove', (e) => {
+      const card = e.target.closest('.outfit-card, .shop-card');
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--sx', ((e.clientX - r.left) / r.width * 100) + '%');
+      card.style.setProperty('--sy', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+
+    function init() {
+      setLang(lang);
+      loadTheme();
+      renderCategories();
+      /* color palette removed */
+      renderOutfits();
+      renderCollections();
+      updateFavBadge();
+      updateCartBadge();
+      updateWallpaper();
+      renderOrderHistory();
+      // shop category filter options
+      const scf = document.getElementById('shopCatFilter');
+      if (scf && scf.options.length <= 1) {
+        categories.filter(c => c.id !== 'all').forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.id;
+          opt.textContent = c.emoji + ' ' + (c.id);
+          scf.appendChild(opt);
+        });
+      }
+    }
+
+    function save() {
+      localStorage.setItem('calmFits_favorites', JSON.stringify(favorites));
+      localStorage.setItem('calmFits_collections', JSON.stringify(collections));
+      updateFavBadge();
+    }
+
+    function updateFavBadge() {
+      const badge = document.getElementById('fav-count');
+      if (favorites.length > 0) {
+        badge.style.display = 'flex';
+        badge.textContent = favorites.length;
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    function renderCategories() {
+      const container = document.getElementById('categories');
+      container.innerHTML = categories.map(cat => `
+        <button class="cat-btn ${currentCategory === cat.id ? 'active' : ''}"
+                onclick="setCategory('${cat.id}')">
+          ${cat.emoji} ${t(cat.i18nKey)}
+        </button>
+      `).join('');
+    }
+
+    function setCategory(id) {
+      currentCategory = id;
+      currentView = 'all';
+      currentCollectionId = null;
+      hideShop();
+      document.getElementById('viewHeader').style.display = 'none';
+      document.getElementById('gridTitle').style.display = 'block';
+      document.getElementById('gridTitle').textContent =
+        id === 'all' ? t('allOutfits') : t(categories.find(c => c.id === id).i18nKey) + ' Outfits';
+      renderCategories();
+      filterOutfits();
+      updateWallpaper();
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('nav-all').classList.add('active');
+    }
+
+    function getFilteredOutfits() {
+      const search = document.getElementById('searchInput').value.toLowerCase().trim();
+      let list = outfits;
+
+      if (currentView === 'collection' && currentCollectionId) {
+        const col = collections.find(c => c.id === currentCollectionId);
+        if (col) list = outfits.filter(o => col.outfitIds.includes(o.id));
+      } else if (currentCategory !== 'all') {
+        list = list.filter(o => o.category === currentCategory);
+      }
+
+      if (search) {
+        list = list.filter(o =>
+          o.name.toLowerCase().includes(search) ||
+          o.category.toLowerCase().includes(search)
+        );
+      }
+      return list;
+    }
+
+    function renderOutfits() {
+      let list;
+      if (currentView === 'collection' && currentCollectionId) {
+        const col = collections.find(c => c.id === currentCollectionId);
+        list = col ? outfits.filter(o => col.outfitIds.includes(o.id)) : [];
+      } else if (currentView === 'favorites') {
+        list = outfits.filter(o => favorites.includes(o.id));
+      } else {
+        const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+        list = outfits.filter(o => {
+          if (currentCategory !== 'all' && o.category !== currentCategory) return false;
+          if (q && !o.name.toLowerCase().includes(q)) return false;
+          return true;
+        });
+      }
+      const grid = document.getElementById('outfitGrid');
+      if (!list.length) {
+        grid.innerHTML = `<div class="empty-cute" style="grid-column:1/-1"><div class="emoji">☁️</div><p>${t('emptyGrid')}</p></div>`;
+        return;
+      }
+      grid.innerHTML = list.map(o => {
+        const isFav = favorites.includes(o.id);
+        const cat = categories.find(c => c.id === o.category);
+        const prod = shopProducts.find(p => p.outfitId === o.id);
+        const inCart = prod && cart.find(c => c.id === prod.id);
+        return `
+          <div class="outfit-card" onclick="openDetail(${o.id})">
+            <button class="fav-btn ${isFav ? 'liked' : ''}" onclick="toggleFavorite(${o.id}, event)" title="Favorite">
+              ${isFav ? '♥' : '♡'}
+            </button>
+            <img src="${o.img}" alt="${o.name}" loading="lazy" />
+            <div class="outfit-info">
+              <div class="outfit-name">${o.name}</div>
+              <div class="outfit-cat">${cat ? cat.emoji + ' ' + t(cat.i18nKey) : ''}</div>
+              <button class="card-cart-btn ${inCart ? 'added' : ''}" onclick="addOutfitToCart(${o.id}, event, this)">
+                ${inCart ? t('added') : '🛒 ' + t('addToCart')}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterOutfits() { renderOutfits(); }
+
+    function showAll() {
+      currentView = 'all';
+      currentCollectionId = null;
+      currentCategory = 'all';
+      hideShop();
+      hideTryOn();
+      document.getElementById('viewHeader').style.display = 'none';
+      document.getElementById('gridTitle').style.display = 'block';
+      document.getElementById('gridTitle').textContent = t('allOutfits');
+      document.getElementById('searchInput').value = '';
+      renderCategories();
+      renderOutfits();
+      updateWallpaper();
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('nav-all').classList.add('active');
+    }
+
+    function toggleFavorite(id, e) {
+      e.stopPropagation();
+      softClick();
+      const idx = favorites.indexOf(id);
+      if (idx > -1) {
+        favorites.splice(idx, 1);
+        collections.forEach(c => {
+          c.outfitIds = c.outfitIds.filter(oid => oid !== id);
+        });
+        showToast('Removed from favorites');
+      } else {
+        favorites.push(id);
+        showToast('Saved to favorites ♡');
+        heartConfetti(e.clientX || window.innerWidth/2, e.clientY || window.innerHeight/2);
+        openModal(id);
+      }
+      save();
+      renderOutfits();
+      renderCollections();
+      updateFavBadge();
+    }
+
+    function createCollection() {
+      const input = document.getElementById('newCollectionName');
+      const name = input.value.trim();
+      if (!name) return;
+      const id = 'col_' + Date.now();
+      collections.push({ id, name, outfitIds: [] });
+      input.value = '';
+      save();
+      renderCollections();
+    }
+
+    function renderCollections() {
+      const list = document.getElementById('collectionList');
+      if (collections.length === 0) {
+        list.innerHTML = `<div class="empty-state"><span class="emoji">☁️</span>${t('emptyCollections')}</div>`;
+        return;
+      }
+      list.innerHTML = collections.map(c => {
+        const countLabel = c.outfitIds.length === 1 ? t('outfit') : t('outfits');
+        return `
+          <div class="collection-item ${currentCollectionId === c.id ? 'active' : ''}" onclick="viewCollection('${c.id}')">
+            <div class="left">
+              <span class="heart-icon">♡</span>
+              <div>
+                <div class="name">${c.name}</div>
+                <div class="count">${c.outfitIds.length} ${countLabel}</div>
+              </div>
+            </div>
+            <button class="share-btn" onclick="shareCollection('${c.id}'); event.stopPropagation();" title="Share">${t('shareCol')}</button>
+            <button class="delete-col" onclick="deleteCollection('${c.id}', event)" title="Delete">✕</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function viewCollection(id) {
+      currentView = 'collection';
+      currentCollectionId = id;
+      const col = collections.find(c => c.id === id);
+      document.getElementById('viewHeader').style.display = 'flex';
+      document.getElementById('viewTitle').textContent = col.name;
+      document.getElementById('gridTitle').style.display = 'none';
+      currentCategory = 'all';
+      renderCategories();
+      renderOutfits();
+      renderCollections();
+      updateWallpaper();
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('nav-collections').classList.add('active');
+    }
+
+    function deleteCollection(id, e) {
+      e.stopPropagation();
+      if (!confirm(t('confirmDelete'))) return;
+      collections = collections.filter(c => c.id !== id);
+      if (currentCollectionId === id) showAll();
+      save();
+      renderCollections();
+    }
+
+    function showCollectionsPanel() {
+      document.getElementById('collectionsPanel').scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('nav-collections').classList.add('active');
+    }
+
+    let pendingOutfitId = null;
+
+    function openModal(outfitId) {
+      pendingOutfitId = outfitId;
+      const modalList = document.getElementById('modalList');
+      if (collections.length === 0) {
+        modalList.innerHTML = `<div class="empty-state" style="padding:1rem;">${t('makeCollectionFirst')}</div>`;
+      } else {
+        modalList.innerHTML = collections.map(c => `
+          <button onclick="addToCollection('${c.id}')">${c.name}</button>
+        `).join('');
+      }
+      document.getElementById('modal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('show');
+      pendingOutfitId = null;
+    }
+
+    function addToCollection(colId) {
+      const col = collections.find(c => c.id === colId);
+      if (col && pendingOutfitId && !col.outfitIds.includes(pendingOutfitId)) {
+        col.outfitIds.push(pendingOutfitId);
+        save();
+        renderCollections();
+      }
+      closeModal();
+    }
+
+    document.getElementById('modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    init();
+  </script>
+</body>
+</html>
